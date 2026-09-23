@@ -24,6 +24,10 @@ local defaults = {
 		moveGrid = true,
 		snapToGrid = true,
 		gridSize = 16,
+		skinElements = true, -- square style for Blizzard's other UI pieces (Skin.lua)
+		skinOutlineStyle = "outline",
+		skinOutlineSize = 1,
+		skinOutlineColor = { r = 0, g = 0, b = 0, a = 1 },
 		-- Blizzard UI elements made movable (see Elements.lua). No position = the element's default.
 		elements = {
 			["**"] = {
@@ -48,6 +52,7 @@ local defaults = {
 				fadeAlpha = 0,
 				showGrid = true,  -- show empty buttons
 				growth = "down",  -- extra rows go "down" or "up"
+				direction = "ltr", -- button order: "ltr" (left to right) or "rtl"
 				numButtons = 12,
 				perRow = 12,
 				buttonSize = 36,
@@ -138,6 +143,7 @@ function YB:Refresh()
 	end
 	self:UpdateAllBars()
 	self:UpdateElements()
+	self:SkinElements()
 	self:SetLocked(profile.locked)
 	self:RefreshOptions()
 end

@@ -33,6 +33,8 @@ local VISIBILITY = {
 
 local GROWTH = { down = "Down", up = "Up" }
 
+local DIRECTIONS = { ltr = "Left to Right", rtl = "Right to Left" }
+
 local options
 
 local ALL = "all" -- id of the "All Bars" group
@@ -172,6 +174,9 @@ local function barOptions(id, order)
 					numButtons = rangeOption("Buttons", 2, 1, YB.MAX_BUTTONS, 1),
 					perRow = rangeOption("Buttons per Row", 3, 1, YB.MAX_BUTTONS, 1, { hidden = perBarOnly }),
 					growth = { type = "select", name = "Rows Grow", order = 4, values = GROWTH },
+					direction = { type = "select", name = "Button Order", order = 4.5, values = DIRECTIONS,
+						desc = "Which side button 1 starts on.",
+					},
 					buttonSize = rangeOption("Button Size", 5, 16, 64, 1),
 					spacing = rangeOption("Spacing", 6, 0, 20, 1),
 					padding = rangeOption("Padding", 7, 0, 20, 1),
@@ -437,6 +442,48 @@ function YB:SetupOptions()
 	for _, el in ipairs(YB.ELEMENTS) do
 		options.args.elements.args[el.key] = elementOptions(el)
 	end
+	options.args.elements.args.style = {
+		type = "group", name = "|cff33ccffStyle|r", order = 0,
+		desc = "The square look for all UI elements.",
+		get = function(info) return YB.db.profile[info[#info]] end,
+		set = function(info, value)
+			YB.db.profile[info[#info]] = value
+			YB:UpdateSkinOutlines()
+		end,
+		args = {
+			skinElements = {
+				type = "toggle", name = "Square Style for UI Elements", order = 1, width = "full",
+				desc = "Square icons, thin borders and flat bars for the stance, pet, possess and totem bars, "
+					.. "bags, buffs/debuffs, and the XP, reputation and cast bars.",
+				set = function(_, value)
+					YB.db.profile.skinElements = value
+					if value then
+						YB:SkinElements()
+					else
+						YB:Print("Type /reload to bring back Blizzard's look.")
+					end
+				end,
+			},
+			skinOutlineStyle = { type = "select", name = "Outline Style", order = 2, values = SHADOW_STYLES },
+			skinOutlineSize = rangeOption("Outline Size", 3, 0, 20, 1),
+			skinOutlineColor = {
+				type = "color", name = "Outline Color", order = 4, hasAlpha = true,
+				get = function()
+					local c = YB.db.profile.skinOutlineColor
+					return c.r, c.g, c.b, c.a
+				end,
+				set = function(_, r, g, b, a)
+					local c = YB.db.profile.skinOutlineColor
+					c.r, c.g, c.b, c.a = r, g, b, a
+					YB:UpdateSkinOutlines()
+				end,
+			},
+			note = {
+				type = "description", order = 5,
+				name = "\nThe micro menu and the totem slot buttons keep Blizzard's art.",
+			},
+		},
+	}
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, options)
 	AceConfigDialog:SetDefaultSize(addonName, 800, 620)

@@ -4,7 +4,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-bars` | v0.7.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
+| `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 
 ## Conventions
 
@@ -117,7 +117,8 @@ yancer/
 - **All Bars** (top of `/yb` → Bars) changes every bar at once. It shows the Main Bar's values.
 - **Per-bar settings** (tabs in `/yb` → Bars):
   - **General:** name, enabled, action page, main-bar paging, show empty buttons.
-  - **Layout:** buttons, buttons per row, rows grow up or down, button size, spacing, padding,
+  - **Layout:** buttons, buttons per row, button order (left to right or right to left), rows grow up
+    or down, button size, spacing, padding,
     position, strata, level.
   - **Visibility:** always / in combat only / custom macro conditions (e.g. `[combat][harm] show; hide`),
     hide in vehicle, opacity, fade unless mouseover (faded bars return while moving bars or holding
@@ -142,6 +143,11 @@ yancer/
   pet bar slide-in), so after any Blizzard `SetPoint` on them yancer-bars puts them back. The stance,
   pet, possess and totem bars hold secure buttons and are only re-placed out of combat.
   Turning an element off leaves it where it is until `/reload`.
+- **Square style for UI elements** (`/yb` → UI Elements → Style, on by default): stance, pet, possess and
+  totem buttons, bags, buffs/debuffs (debuff type colour on the border) get square cropped icons and flat
+  highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
+  (style, size, colour). The micro menu and totem slot buttons keep Blizzard's art. Undoing it needs
+  a `/reload`.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.

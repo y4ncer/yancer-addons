@@ -106,6 +106,7 @@ local function layoutButtons(header, db)
 	local rows = math.ceil(n / perRow)
 	local size, spacing, pad = db.buttonSize, db.spacing, db.padding
 	local growUp = db.growth == "up"
+	local rightToLeft = db.direction == "rtl"
 
 	header:SetWidth(pad * 2 + perRow * size + (perRow - 1) * spacing)
 	header:SetHeight(pad * 2 + rows * size + (rows - 1) * spacing)
@@ -119,6 +120,9 @@ local function layoutButtons(header, db)
 			button:SetFrameLevel(header:GetFrameLevel() + 2)
 			button:ClearAllPoints()
 			local col, row = (i - 1) % perRow, math.floor((i - 1) / perRow)
+			if rightToLeft then
+				col = perRow - 1 - col
+			end
 			local x = pad + col * (size + spacing)
 			local y = pad + row * (size + spacing)
 			if growUp then

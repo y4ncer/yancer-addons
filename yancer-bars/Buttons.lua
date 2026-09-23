@@ -206,6 +206,8 @@ end
 hooksecurefunc("ActionButton_Update", function(button)
 	if button.yancer then
 		YB:UpdateButtonArt(button)
+	elseif button.ySkinned then
+		YB:StripNormal(button) -- Blizzard buttons styled in Skin.lua (e.g. totem bar)
 	end
 end)
 

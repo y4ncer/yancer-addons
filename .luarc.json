@@ -1,0 +1,26 @@
+{
+	"$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+	"runtime.version": "Lua 5.1",
+	"workspace.ignoreDir": ["tools", ".vscode", ".claude"],
+	"workspace.checkThirdParty": false,
+	"diagnostics.libraryFiles": "Disable",
+	"diagnostics.ignoredFiles": "Disable",
+	"diagnostics.globals": [
+		"YancerUI",
+		"yancerUIDB",
+		"LibStub",
+		"CreateFrame",
+		"UIParent",
+		"GameTooltip",
+		"wipe",
+		"strtrim",
+		"strsplit",
+		"format",
+		"tinsert",
+		"tremove",
+		"InCombatLockdown",
+		"GetTime",
+		"UnitName",
+		"UnitClass"
+	]
+}

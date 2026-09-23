@@ -1,0 +1,14 @@
+## Interface: 30300
+## Title: |cff33ccffyancer|r-ui
+## Notes: Movable, customizable panels with soft shadows.
+## Author: yancer
+## Version: 0.1.0
+## SavedVariables: yancerUIDB
+
+embeds.xml
+
+Core.lua
+Shadow.lua
+Mover.lua
+Panels.lua
+Options.lua

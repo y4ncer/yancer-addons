@@ -1,0 +1,12 @@
+# Downloaded by tools/lint.ps1 on first run
+tools/luacheck.exe
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+desktop.ini
+__pycache__/

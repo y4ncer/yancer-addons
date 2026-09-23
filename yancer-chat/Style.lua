@@ -91,6 +91,11 @@ local function place()
 	if not YC.db.profile.manage or not holder then
 		return
 	end
+	-- Blizzard clamps chat windows 35-50px away from the screen edges (room for its
+	-- side buttons, tab and input box), so near an edge the chat wouldn't follow the mover.
+	for _, chat in ipairs(YC:ChatFrames()) do
+		chat:SetClampRectInsets(0, 0, 0, 0)
+	end
 	-- Blizzard restores its saved size right before its SetPoint, so re-apply ours too.
 	frame.yPlacing = true
 	frame:SetWidth(YC.db.profile.width)

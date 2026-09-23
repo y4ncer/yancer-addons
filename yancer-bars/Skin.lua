@@ -204,10 +204,17 @@ local function skinMicroMenu()
 	local latency = _G.MainMenuBarPerformanceBar
 	if latency then
 		latency:SetTexture(YB.WHITE)
-		latency:ClearAllPoints()
-		latency:SetPoint("BOTTOMLEFT", _G.MainMenuMicroButton.yInner, "BOTTOMLEFT", 1, 1)
-		latency:SetPoint("BOTTOMRIGHT", _G.MainMenuMicroButton.yInner, "BOTTOMRIGHT", -1, 1)
-		latency:SetHeight(2)
+		local function placeLatency()
+			latency:ClearAllPoints()
+			latency:SetPoint("BOTTOMLEFT", _G.MainMenuMicroButton.yInner, "BOTTOMLEFT", 1, 1)
+			latency:SetPoint("BOTTOMRIGHT", _G.MainMenuMicroButton.yInner, "BOTTOMRIGHT", -1, 1)
+			latency:SetHeight(2)
+		end
+		placeLatency()
+		-- Blizzard adds its own TOPLEFT anchor on every micro button update, which
+		-- stretched the stripe into a block.
+		hooksecurefunc("MainMenuMicroButton_SetNormal", placeLatency)
+		hooksecurefunc("MainMenuMicroButton_SetPushed", placeLatency)
 	end
 end
 

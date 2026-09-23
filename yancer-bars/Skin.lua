@@ -4,7 +4,7 @@ local YB = ns.YB
 -- Gives Blizzard's other UI pieces the same square look as our bars: square
 -- cropped icons with a thin border and flat highlights (stance, pet, possess and
 -- totem buttons, bags, buffs/debuffs), and flat status bars with a border (XP,
--- reputation, cast bar). All of them get the shared outline.
+-- reputation, cast bar), plus the micro menu. All of them get the shared outline.
 -- Undoing it needs a /reload.
 
 local outlined = {} -- frames carrying the shared outline, re-drawn when its settings change
@@ -134,6 +134,72 @@ local function skinAura(button, border, r, g, b)
 	end
 end
 
+-- Micro menu: each button's image is 28x58 with the icon in the bottom half.
+-- Crop the images to that icon area and give it a square frame.
+local MICRO_BUTTONS = {
+	"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton",
+	"QuestLogMicroButton", "SocialsMicroButton", "PVPMicroButton", "LFDMicroButton",
+	"MainMenuMicroButton", "HelpMicroButton",
+}
+
+local function skinMicroButton(button)
+	local frame = CreateFrame("Frame", nil, button)
+	frame:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 2, 0)
+	frame:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -28)
+	frame:SetFrameLevel(math.max(button:GetFrameLevel() - 1, 0))
+	squareBackdrop(frame)
+	outline(frame)
+
+	local isCharacter = button == _G.CharacterMicroButton
+	for _, tex in ipairs({ button:GetNormalTexture(), button:GetPushedTexture(), button:GetDisabledTexture() }) do
+		if isCharacter then
+			tex:SetAlpha(0) -- only a ring around the portrait
+		else
+			tex:SetTexCoord(0.17, 0.87, 0.5, 0.908)
+			tex:ClearAllPoints()
+			tex:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -1)
+			tex:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1)
+		end
+	end
+	local highlight = button:GetHighlightTexture()
+	highlight:SetTexture(YB.WHITE)
+	highlight:SetVertexColor(1, 1, 1, 0.2)
+	highlight:ClearAllPoints()
+	highlight:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -1)
+	highlight:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1)
+	button.yInner = frame
+end
+
+local function skinMicroMenu()
+	for _, name in ipairs(MICRO_BUTTONS) do
+		if _G[name] then
+			skinMicroButton(_G[name])
+		end
+	end
+	local portrait = _G.MicroButtonPortrait
+	portrait:ClearAllPoints()
+	portrait:SetPoint("TOPLEFT", _G.CharacterMicroButton.yInner, "TOPLEFT", 1, -1)
+	portrait:SetPoint("BOTTOMRIGHT", _G.CharacterMicroButton.yInner, "BOTTOMRIGHT", -1, 1)
+
+	local emblem = _G.PVPMicroButtonTexture
+	if emblem then
+		emblem:ClearAllPoints()
+		emblem:SetPoint("CENTER", _G.PVPMicroButton.yInner, "CENTER", 0, 0)
+		emblem:SetWidth(28)
+		emblem:SetHeight(28)
+	end
+
+	-- Latency: a thin coloured stripe along the bottom of the menu button.
+	local latency = _G.MainMenuBarPerformanceBar
+	if latency then
+		latency:SetTexture(YB.WHITE)
+		latency:ClearAllPoints()
+		latency:SetPoint("BOTTOMLEFT", _G.MainMenuMicroButton.yInner, "BOTTOMLEFT", 1, 1)
+		latency:SetPoint("BOTTOMRIGHT", _G.MainMenuMicroButton.yInner, "BOTTOMRIGHT", -1, 1)
+		latency:SetHeight(2)
+	end
+end
+
 function YB:SkinElements()
 	if self.elementsSkinned or not self.db.profile.skinElements then
 		return
@@ -175,6 +241,8 @@ function YB:SkinElements()
 		"ReputationXPBarTexture0", "ReputationXPBarTexture1",
 		"ReputationXPBarTexture2", "ReputationXPBarTexture3",
 	})
+
+	skinMicroMenu()
 
 	self:SkinStatusBar(_G.CastingBarFrame, { "CastingBarFrameBorder", "CastingBarFrameFlash", "CastingBarFrameBorderShield" })
 	_G.CastingBarFrameText:ClearAllPoints()

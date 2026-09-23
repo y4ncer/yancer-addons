@@ -66,6 +66,8 @@ yancer/
 │  ├─ Libs/              Ace3 r969 subset
 │  ├─ Media/             textures
 │  └─ *.lua
+├─ yancer-chat/          module addon: Core, Style, Messages, Copy, Options (no Libs/)
+├─ yancer-frames/        module addon: Core, Frames, Auras, CastBar, Options (no Libs/)
 ├─ tools/
 │  ├─ link.ps1           junction every yancer-* folder into WoW's AddOns
 │  ├─ lint.ps1           luacheck every yancer-* addon

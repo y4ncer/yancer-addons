@@ -35,10 +35,16 @@ local MAIN_PAGING = "[bonusbar:5] 11; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5
 	.. "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10; "
 
 local function pageDriver(db)
-	if db.paging then
-		return MAIN_PAGING .. db.page
+	if not db.paging then
+		return tostring(db.page)
 	end
-	return tostring(db.page)
+	local driver = MAIN_PAGING
+	local _, class = UnitClass("player")
+	if class == "ROGUE" and db.shadowDance then
+		-- Shadow Dance is a rogue shapeshift form: page it like Stealth (page 7).
+		driver = driver .. "[form:2/3] 7; "
+	end
+	return driver .. db.page
 end
 
 local function visibilityDriver(db)
@@ -79,6 +85,8 @@ local function getHeader(id)
 		db.point, db.relPoint, db.x, db.y = point, relPoint, x, y
 		YB:UpdateBar(header.barId)
 		YB:RefreshOptions()
+	end, function()
+		YB:OpenOptions("bars", header.barId)
 	end)
 	YB.barFrames[num] = header
 	return header
@@ -178,6 +186,7 @@ function YB:UpdateBar(id)
 
 	self:UpdateFade(header)
 	self:UpdateTicker()
+	self:UpdateBlizzardBindings()
 end
 
 function YB:UpdateAllBars()
@@ -192,6 +201,7 @@ function YB:UpdateAllBars()
 		self:UpdateBar(id)
 	end
 	self:UpdateTicker()
+	self:UpdateBlizzardBindings()
 end
 
 -- Picks an action page no other bar uses, so a new bar doesn't mirror an existing one.
@@ -253,6 +263,7 @@ function YB:DeleteBar(id)
 	self.db.profile.bars[id] = nil
 	self:UpdateBar(id)
 	self:UpdateTicker()
+	self:UpdateBlizzardBindings()
 	self:RefreshOptions()
 end
 

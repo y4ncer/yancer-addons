@@ -30,21 +30,7 @@ local GROWTH = { down = "Down", up = "Up" }
 
 local options
 
--- Builds a color option bound to a { r, g, b, a } table returned by getTable().
-local function colorOption(name, order, getTable, onChange)
-	return {
-		type = "color", name = name, order = order, hasAlpha = true,
-		get = function()
-			local c = getTable()
-			return c.r, c.g, c.b, c.a
-		end,
-		set = function(_, r, g, b, a)
-			local c = getTable()
-			c.r, c.g, c.b, c.a = r, g, b, a
-			onChange()
-		end,
-	}
-end
+local ALL = "all" -- id of the "All Bars" group
 
 local function rangeOption(name, order, min, max, step, extra)
 	local opt = { type = "range", name = name, order = order, min = min, max = max, step = step }
@@ -58,17 +44,54 @@ local function header(name, order)
 	return { type = "header", name = name, order = order }
 end
 
+-- Options for one bar, or with id == ALL for every bar at once: those show the
+-- Main Bar's values and write to all bars. Settings that only make sense per
+-- bar (name, page, position, ...) are hidden in the ALL group.
 local function barOptions(id, order)
+	local isAll = id == ALL
+
+	-- The bar whose values are displayed.
 	local function db()
+		if isAll then
+			return YB:GetBarDB("bar1") or select(2, next(YB.db.profile.bars))
+		end
 		return YB:GetBarDB(id)
 	end
-	local function update()
-		YB:UpdateBar(id)
+	-- Applies fn to every affected bar's settings, then redraws.
+	local function each(fn)
+		if isAll then
+			for _, d in pairs(YB.db.profile.bars) do
+				fn(d)
+			end
+			YB:UpdateAllBars()
+		else
+			fn(db())
+			YB:UpdateBar(id)
+		end
+	end
+	local function perBarOnly()
+		return isAll
+	end
+
+	-- A color option bound to the { r, g, b, a } table pick(settings) returns.
+	local function colorOption(name, pos, pick)
+		return {
+			type = "color", name = name, order = pos, hasAlpha = true,
+			get = function()
+				local c = pick(db())
+				return c.r, c.g, c.b, c.a
+			end,
+			set = function(_, r, g, b, a)
+				each(function(d)
+					local c = pick(d)
+					c.r, c.g, c.b, c.a = r, g, b, a
+				end)
+			end,
+		}
 	end
 	local function shadowGetSet(key)
 		return function() return db().shadow[key] end, function(_, value)
-			db().shadow[key] = value
-			update()
+			each(function(d) d.shadow[key] = value end)
 		end
 	end
 	local shadowEnabledGet, shadowEnabledSet = shadowGetSet("enabled")
@@ -77,8 +100,12 @@ local function barOptions(id, order)
 	return {
 		type = "group",
 		name = function()
+			if isAll then
+				return "|cff33ccffAll Bars|r"
+			end
 			return db() and db().name or id
 		end,
+		desc = isAll and "Change every bar at once." or nil,
 		order = order,
 		childGroups = "tab",
 		-- Options below read and write the bar setting named by their key.
@@ -86,37 +113,46 @@ local function barOptions(id, order)
 			return db()[info[#info]]
 		end,
 		set = function(info, value)
-			db()[info[#info]] = value
-			update()
+			local key = info[#info]
+			each(function(d) d[key] = value end)
 		end,
 		args = {
 			general = {
 				type = "group", name = "General", order = 1,
 				args = {
+					allNote = {
+						type = "description", order = 0, fontSize = "medium",
+						name = "Settings shown are the Main Bar's. Any change here is applied to every bar.\n",
+						hidden = not isAll,
+					},
 					name = {
-						type = "input", name = "Name", order = 1,
+						type = "input", name = "Name", order = 1, hidden = perBarOnly,
 						set = function(_, value)
 							value = strtrim(value)
 							if value ~= "" then
 								db().name = value
-								update()
+								YB:UpdateBar(id)
 								YB:RefreshOptions()
 							end
 						end,
 					},
-					enabled = { type = "toggle", name = "Enabled", order = 2 },
+					enabled = { type = "toggle", name = "Enabled", order = 2, hidden = perBarOnly },
 					actionsHeader = header("Actions", 10),
-					page = { type = "select", name = "Action Page", order = 11, values = YB.PAGES,
+					page = { type = "select", name = "Action Page", order = 11, values = YB.PAGES, hidden = perBarOnly,
 						desc = "Which 12 action slots this bar shows. Bars on the same page show the same spells.",
 					},
-					paging = { type = "toggle", name = "Main Bar Paging", order = 12,
+					paging = { type = "toggle", name = "Main Bar Paging", order = 12, hidden = perBarOnly,
 						desc = "Switch pages like Blizzard's main bar: stances/forms/stealth, "
 							.. "possess and vehicles, and Shift+1-6 / Shift+mouse wheel.",
 					},
-					showGrid = { type = "toggle", name = "Show Empty Buttons", order = 13 },
+					shadowDance = { type = "toggle", name = "Shadow Dance as Stealth", order = 13, hidden = perBarOnly,
+						desc = "Rogues: while Shadow Dance is active, show the Stealth page like Stealth does.",
+						disabled = function() return not db().paging end,
+					},
+					showGrid = { type = "toggle", name = "Show Empty Buttons", order = 14 },
 					deleteHeader = header("", 90),
 					delete = {
-						type = "execute", name = "Delete Bar", order = 91,
+						type = "execute", name = "Delete Bar", order = 91, hidden = perBarOnly,
 						confirm = true, confirmText = "Delete this bar?",
 						func = function()
 							YB:DeleteBar(id)
@@ -129,21 +165,21 @@ local function barOptions(id, order)
 				args = {
 					buttonsHeader = header("Buttons", 1),
 					numButtons = rangeOption("Buttons", 2, 1, YB.MAX_BUTTONS, 1),
-					perRow = rangeOption("Buttons per Row", 3, 1, YB.MAX_BUTTONS, 1),
+					perRow = rangeOption("Buttons per Row", 3, 1, YB.MAX_BUTTONS, 1, { hidden = perBarOnly }),
 					growth = { type = "select", name = "Rows Grow", order = 4, values = GROWTH },
 					buttonSize = rangeOption("Button Size", 5, 16, 64, 1),
 					spacing = rangeOption("Spacing", 6, 0, 20, 1),
 					padding = rangeOption("Padding", 7, 0, 20, 1),
 					positionHeader = header("Position", 10),
-					point = { type = "select", name = "Anchor", order = 11, values = POINTS,
+					point = { type = "select", name = "Anchor", order = 11, values = POINTS, hidden = perBarOnly,
 						set = function(_, value)
 							local b = db()
 							b.point, b.relPoint = value, value
-							update()
+							YB:UpdateBar(id)
 						end,
 					},
-					x = rangeOption("X Offset", 12, -2000, 2000, 1),
-					y = rangeOption("Y Offset", 13, -2000, 2000, 1),
+					x = rangeOption("X Offset", 12, -2000, 2000, 1, { hidden = perBarOnly }),
+					y = rangeOption("Y Offset", 13, -2000, 2000, 1, { hidden = perBarOnly }),
 					strata = { type = "select", name = "Frame Strata", order = 14, values = STRATA },
 					level = rangeOption("Frame Level", 15, 1, 50, 1),
 				},
@@ -177,8 +213,8 @@ local function barOptions(id, order)
 				type = "group", name = "Appearance", order = 4,
 				args = {
 					barHeader = header("Bar", 1),
-					bgColor = colorOption("Background", 2, function() return db().bgColor end, update),
-					borderColor = colorOption("Border", 3, function() return db().borderColor end, update),
+					bgColor = colorOption("Background", 2, function(d) return d.bgColor end),
+					borderColor = colorOption("Border", 3, function(d) return d.borderColor end),
 					borderSize = rangeOption("Border Size", 4, 0, 10, 1),
 					shadowEnabled = { type = "toggle", name = "Bar Shadow", order = 5,
 						get = shadowEnabledGet, set = shadowEnabledSet },
@@ -186,12 +222,10 @@ local function barOptions(id, order)
 						get = shadowSizeGet, set = shadowSizeSet,
 						disabled = function() return not db().shadow.enabled end,
 					}),
-					shadowColor = colorOption("Shadow Color", 7, function() return db().shadow.color end, update),
+					shadowColor = colorOption("Shadow Color", 7, function(d) return d.shadow.color end),
 					buttonHeader = header("Buttons", 10),
-					buttonBgColor = colorOption("Button Background", 11,
-						function() return db().buttonBgColor end, update),
-					buttonBorderColor = colorOption("Button Border", 12,
-						function() return db().buttonBorderColor end, update),
+					buttonBgColor = colorOption("Button Background", 11, function(d) return d.buttonBgColor end),
+					buttonBorderColor = colorOption("Button Border", 12, function(d) return d.buttonBorderColor end),
 					buttonColorNote = {
 						type = "description", order = 13,
 						name = "Button colors apply to the Clean style.",
@@ -353,10 +387,16 @@ function YB:RefreshOptions()
 	end
 	if count == 0 then
 		args.none = { type = "description", name = "No bars yet. Create one under General." }
+	else
+		args[ALL] = barOptions(ALL, 0)
 	end
 	AceConfigRegistry:NotifyChange(addonName)
 end
 
-function YB:OpenOptions()
+-- Opens the settings window, optionally at a group path, e.g. ("bars", "bar1").
+function YB:OpenOptions(...)
 	AceConfigDialog:Open(addonName)
+	if select("#", ...) > 0 then
+		AceConfigDialog:SelectGroup(addonName, ...)
+	end
 end

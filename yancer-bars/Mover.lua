@@ -89,8 +89,9 @@ local function droppedAnchor(frame)
 end
 
 -- Puts a draggable overlay on `frame`, shown only while unlocked.
--- onMoved(point, relPoint, x, y) is called with the new UIParent-relative anchor.
-function YB:CreateMover(frame, label, onMoved)
+-- onMoved(point, relPoint, x, y) is called with the new UIParent-relative anchor;
+-- onRightClick (optional) is called when the overlay is right-clicked.
+function YB:CreateMover(frame, label, onMoved, onRightClick)
 	if frame.yMover then
 		return frame.yMover
 	end
@@ -119,6 +120,23 @@ function YB:CreateMover(frame, label, onMoved)
 		-- Our own saved variables hold the position, not layout-local.txt.
 		frame:SetUserPlaced(false)
 		onMoved(droppedAnchor(frame))
+	end)
+	mover:SetScript("OnMouseUp", function(_, button)
+		if button == "RightButton" and onRightClick then
+			onRightClick()
+		end
+	end)
+	mover:SetScript("OnEnter", function(overlay)
+		GameTooltip:SetOwner(overlay, "ANCHOR_TOP")
+		GameTooltip:AddLine(overlay.text:GetText())
+		GameTooltip:AddLine("Drag to move", 1, 1, 1)
+		if onRightClick then
+			GameTooltip:AddLine("Right-click to open its settings", 1, 1, 1)
+		end
+		GameTooltip:Show()
+	end)
+	mover:SetScript("OnLeave", function()
+		GameTooltip:Hide()
 	end)
 
 	mover:Hide()

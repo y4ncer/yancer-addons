@@ -40,6 +40,8 @@
 		"GetCursorInfo",
 		"HasAction",
 		"IsUsableAction",
-		"IsActionInRange"
+		"IsActionInRange",
+		"ClearOverrideBindings",
+		"SetOverrideBindingClick"
 	]
 }

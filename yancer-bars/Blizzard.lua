@@ -3,8 +3,8 @@ local YB = ns.YB
 
 -- Hides Blizzard's default action bars. MainMenuBar itself stays, because the
 -- XP bar, bags, micro menu, and the stance/pet/possess/totem bars live in it.
--- The hidden Blizzard buttons keep working, so the default keybinds
--- (1-=, and the bottom/side bar bindings) still cast their action slots.
+-- The default keybinds (1-=, bottom/side bar binds) are moved onto our buttons,
+-- see UpdateBlizzardBindings below.
 
 local hidden = CreateFrame("Frame")
 hidden:Hide()
@@ -48,8 +48,7 @@ function YB:HideBlizzardBars()
 	self.blizzardHidden = true
 end
 
--- Blizzard keybinds that click the (hidden) default buttons for each action page.
--- Used to show those keys on our buttons that share the same slots.
+-- Blizzard keybinds for each action page's default bar.
 YB.BLIZZARD_BINDINGS = {
 	[1] = "ACTIONBUTTON",
 	[3] = "MULTIACTIONBAR3BUTTON", -- right bar
@@ -57,3 +56,65 @@ YB.BLIZZARD_BINDINGS = {
 	[5] = "MULTIACTIONBAR2BUTTON", -- bottom right
 	[6] = "MULTIACTIONBAR1BUTTON", -- bottom left
 }
+
+-- While the default bars are hidden, the keys bound to them (1-=, the side and
+-- bottom bar binds) are redirected to our buttons on the same page with override
+-- bindings, so a key press clicks our secure button directly instead of going
+-- through Blizzard's hidden buttons. If several bars share a page, the lowest
+-- numbered bar gets the keys. Overrides can't change in combat.
+
+local bindOwner = CreateFrame("Frame")
+local appliedSignature
+
+function YB:UpdateBlizzardBindings()
+	if InCombatLockdown() then
+		self.refreshPending = true
+		return
+	end
+	local wanted = {} -- key -> button name
+	if self.blizzardHidden then
+		local nums = {}
+		for num, header in pairs(self.barFrames) do
+			if header.active then
+				nums[#nums + 1] = num
+			end
+		end
+		table.sort(nums)
+		local claimed = {}
+		for _, num in ipairs(nums) do
+			local header = self.barFrames[num]
+			local page = header.db.page
+			local prefix = self.BLIZZARD_BINDINGS[page]
+			if prefix and not claimed[page] then
+				claimed[page] = true
+				for i, button in pairs(header.buttons) do
+					for _, key in ipairs({ GetBindingKey(prefix .. i) }) do
+						wanted[key] = button:GetName()
+					end
+				end
+			end
+		end
+	end
+
+	-- Only touch bindings when something changed: changing them fires
+	-- UPDATE_BINDINGS, which calls back into this function.
+	local keys = {}
+	for key in pairs(wanted) do
+		keys[#keys + 1] = key
+	end
+	table.sort(keys)
+	local parts = {}
+	for _, key in ipairs(keys) do
+		parts[#parts + 1] = key .. "=" .. wanted[key]
+	end
+	local signature = table.concat(parts, ";")
+	if signature == appliedSignature then
+		return
+	end
+	appliedSignature = signature
+
+	ClearOverrideBindings(bindOwner)
+	for key, buttonName in pairs(wanted) do
+		SetOverrideBindingClick(bindOwner, false, key, buttonName)
+	end
+end

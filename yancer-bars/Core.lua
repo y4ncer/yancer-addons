@@ -31,6 +31,7 @@ local defaults = {
 				enabled = true,
 				page = 1,         -- action page 1-10 (12 slots each)
 				paging = false,   -- main-bar paging: stances/forms, possess, Shift+1-6
+				shadowDance = true, -- rogues: with paging, Shadow Dance uses the Stealth page
 				hideInVehicle = true,
 				visibility = "always", -- "always", "combat" or "custom"
 				visibilityCustom = "[combat] show; hide", -- macro conditions, used with "custom"
@@ -90,6 +91,7 @@ function YB:OnEnable()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("UPDATE_BINDINGS", "UpdateBlizzardBindings")
 	self:Refresh()
 end
 

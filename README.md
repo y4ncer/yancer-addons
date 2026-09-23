@@ -4,7 +4,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-bars` | v0.4.0 | Replaces Blizzard's action bars with movable, customizable bars (fading, range colouring, cooldown timers, shadows). |
+| `yancer-bars` | v0.5.0 | Replaces Blizzard's action bars with movable, customizable bars (fading, range colouring, cooldown timers, shadows). |
 
 ## Conventions
 
@@ -89,8 +89,8 @@ yancer/
 ## yancer-bars
 
 - `/yb` (or `/yancerbars`) opens the settings (also in Interface → AddOns → yancer-bars).
-- `/yb move` toggles moving mode (drag the blue overlays). `/yb lock` and `/yb unlock` set it directly.
-  Bars lock automatically when you enter combat.
+- `/yb move` toggles moving mode: drag the blue overlays, or right-click one to open that bar's settings.
+  `/yb lock` and `/yb unlock` set it directly. Bars lock automatically when you enter combat.
 - **Action bars:** up to 10 bars with 1–12 real action buttons each. Each bar shows one action page
   (12 slots). The defaults recreate Blizzard's five bars in the same slots:
 
@@ -106,13 +106,15 @@ yancer/
   options or already holds spells, and is switched off otherwise. **Restore Blizzard Bars** (General)
   recreates any that were deleted. A **New Bar** gets an unused page and appears mid-screen.
 - **Main Bar Paging:** switches pages like Blizzard's main bar (stances, forms, stealth, possess,
-  Shift+1–6, Shift+wheel).
+  Shift+1–6, Shift+wheel). For rogues, **Shadow Dance as Stealth** (on by default) also shows the
+  Stealth page during Shadow Dance.
 - **Hide Blizzard Action Bars** (on by default) hides the default buttons, the side and bottom bars, and the
-  bar art. The XP bar, bags, micro menu, and stance and pet bars stay. The hidden Blizzard buttons still
-  work, so the default keybinds (1–=, bottom and side bar binds) keep casting, and their keys are shown
-  on our buttons that share those slots. Turning it off needs a `/reload`.
+  bar art. The XP bar, bags, micro menu, and stance and pet bars stay. The default keybinds (1–=, bottom
+  and side bar binds) are redirected with override bindings to our buttons on the same page, so they
+  click our buttons directly, and their keys are shown on those buttons. Turning it off needs a `/reload`.
 - **Keybinds:** Esc → Key Bindings → "yancer-bars Bar N". These take priority over the Blizzard binds in the
   button labels.
+- **All Bars** (top of `/yb` → Bars) changes every bar at once. It shows the Main Bar's values.
 - **Per-bar settings** (tabs in `/yb` → Bars):
   - **General:** name, enabled, action page, main-bar paging, show empty buttons.
   - **Layout:** buttons, buttons per row, rows grow up or down, button size, spacing, padding,

@@ -33,4 +33,12 @@ read_globals = {
 	"GetTime",
 	"UnitName",
 	"UnitClass",
+	"hooksecurefunc",
+	"RegisterStateDriver",
+	"UnregisterStateDriver",
+	"SecureCmdOptionParse",
+	"ActionButton_ShowGrid",
+	"ActionButton_HideGrid",
+	"GetBindingKey",
+	"RANGE_INDICATOR",
 }

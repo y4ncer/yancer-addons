@@ -1,0 +1,122 @@
+<Bindings>
+	<Binding name="CLICK yancerUIBar1Button1:LeftButton" header="YANCERUIBAR1"/>
+	<Binding name="CLICK yancerUIBar1Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar1Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button1:LeftButton" header="YANCERUIBAR2"/>
+	<Binding name="CLICK yancerUIBar2Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar2Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button1:LeftButton" header="YANCERUIBAR3"/>
+	<Binding name="CLICK yancerUIBar3Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar3Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button1:LeftButton" header="YANCERUIBAR4"/>
+	<Binding name="CLICK yancerUIBar4Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar4Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button1:LeftButton" header="YANCERUIBAR5"/>
+	<Binding name="CLICK yancerUIBar5Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar5Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button1:LeftButton" header="YANCERUIBAR6"/>
+	<Binding name="CLICK yancerUIBar6Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar6Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button1:LeftButton" header="YANCERUIBAR7"/>
+	<Binding name="CLICK yancerUIBar7Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar7Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button1:LeftButton" header="YANCERUIBAR8"/>
+	<Binding name="CLICK yancerUIBar8Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar8Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button1:LeftButton" header="YANCERUIBAR9"/>
+	<Binding name="CLICK yancerUIBar9Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar9Button12:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button1:LeftButton" header="YANCERUIBAR10"/>
+	<Binding name="CLICK yancerUIBar10Button2:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button3:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button4:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button5:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button6:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button7:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button8:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button9:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button10:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button11:LeftButton"/>
+	<Binding name="CLICK yancerUIBar10Button12:LeftButton"/>
+</Bindings>

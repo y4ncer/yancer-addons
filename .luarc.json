@@ -1,7 +1,11 @@
 {
 	"$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
 	"runtime.version": "Lua 5.1",
-	"workspace.ignoreDir": ["tools", ".vscode", ".claude"],
+	"workspace.ignoreDir": [
+		"tools",
+		".vscode",
+		".claude"
+	],
 	"workspace.checkThirdParty": false,
 	"diagnostics.libraryFiles": "Disable",
 	"diagnostics.ignoredFiles": "Disable",
@@ -21,6 +25,14 @@
 		"InCombatLockdown",
 		"GetTime",
 		"UnitName",
-		"UnitClass"
+		"UnitClass",
+		"hooksecurefunc",
+		"RegisterStateDriver",
+		"UnregisterStateDriver",
+		"SecureCmdOptionParse",
+		"ActionButton_ShowGrid",
+		"ActionButton_HideGrid",
+		"GetBindingKey",
+		"RANGE_INDICATOR"
 	]
 }

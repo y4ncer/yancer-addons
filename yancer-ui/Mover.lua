@@ -29,7 +29,9 @@ function YUI:CreateMover(frame, label, onMoved)
 	mover:EnableMouse(true)
 	mover:RegisterForDrag("LeftButton")
 	mover:SetScript("OnDragStart", function()
-		frame:StartMoving()
+		if not InCombatLockdown() then
+			frame:StartMoving()
+		end
 	end)
 	mover:SetScript("OnDragStop", function()
 		frame:StopMovingOrSizing()
@@ -46,12 +48,16 @@ function YUI:CreateMover(frame, label, onMoved)
 end
 
 function YUI:SetLocked(locked)
+	if not locked and InCombatLockdown() then
+		self:Print("Can't unlock frames in combat.")
+		return
+	end
 	self.db.profile.locked = locked
 	for mover in pairs(self.movers) do
 		if locked then
 			mover:Hide()
 		else
-			mover:SetFrameLevel(mover:GetParent():GetFrameLevel() + 5)
+			mover:SetFrameLevel(mover:GetParent():GetFrameLevel() + 10)
 			mover:Show()
 		end
 	end

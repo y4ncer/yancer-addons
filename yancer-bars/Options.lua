@@ -454,7 +454,7 @@ function YB:SetupOptions()
 			skinElements = {
 				type = "toggle", name = "Square Style for UI Elements", order = 1, width = "full",
 				desc = "Square icons, thin borders and flat bars for the stance, pet, possess and totem bars, "
-					.. "bags, buffs/debuffs, and the XP, reputation and cast bars.",
+					.. "bags, micro menu, buffs/debuffs, and the XP, reputation and cast bars.",
 				set = function(_, value)
 					YB.db.profile.skinElements = value
 					if value then
@@ -480,7 +480,7 @@ function YB:SetupOptions()
 			},
 			note = {
 				type = "description", order = 5,
-				name = "\nThe micro menu and the totem slot buttons keep Blizzard's art.",
+				name = "\nThe totem slot buttons and the keyring keep Blizzard's art.",
 			},
 		},
 	}

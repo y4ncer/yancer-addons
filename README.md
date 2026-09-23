@@ -144,9 +144,9 @@ yancer/
   pet, possess and totem bars hold secure buttons and are only re-placed out of combat.
   Turning an element off leaves it where it is until `/reload`.
 - **Square style for UI elements** (`/yb` → UI Elements → Style, on by default): stance, pet, possess and
-  totem buttons, bags, buffs/debuffs (debuff type colour on the border) get square cropped icons and flat
+  totem buttons, bags, the micro menu, buffs/debuffs (debuff type colour on the border) get square cropped icons and flat
   highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
-  (style, size, colour). The micro menu and totem slot buttons keep Blizzard's art. Undoing it needs
+  (style, size, colour). The totem slot buttons and keyring keep Blizzard's art. Undoing it needs
   a `/reload`.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,

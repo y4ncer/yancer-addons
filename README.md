@@ -4,17 +4,17 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-ui` | v0.2.0 | Movable, customizable action bars with soft shadows. Base for the rest of the suite. |
+| `yancer-bars` | v0.4.0 | Replaces Blizzard's action bars with movable, customizable bars (fading, range colouring, cooldown timers, shadows). |
 
 ## Conventions
 
-- **Naming:** every addon folder and `.toc` starts with `yancer-` (`yancer-ui`, `yancer-plates`, ...).
+- **Naming:** every addon folder and `.toc` starts with `yancer-` (`yancer-bars`, `yancer-plates`, ...).
   The folder name, `.toc` file name and AceAddon name are identical.
 - **Title** in the `.toc`: `|cff33ccffyancer|r-<name>` so they group together in the addon list.
-- **SavedVariables:** `yancer<Name>DB` (e.g. `yancerUIDB`, `yancerPlatesDB`).
-- **Globals:** only the addon object (e.g. `YancerUI`) and its SavedVariables. Everything else is `local`
+- **SavedVariables:** `yancer<Name>DB` (e.g. `yancerBarsDB`, `yancerPlatesDB`).
+- **Globals:** only the addon object (e.g. `YancerBars`) and its SavedVariables. Everything else is `local`
   or lives in the private namespace: `local addonName, ns = ...`.
-- **Frame names:** `yancer<Name><Thing><n>` (e.g. `yancerUIBar1`, `yancerUIBar1Button3`), or unnamed.
+- **Frame names:** `yancer<Name><Thing><n>` (e.g. `yancerBarsBar1`, `yancerBarsBar1Button3`), or unnamed.
 - **Interface version:** `## Interface: 30300`.
 - **Style:** tabs for indentation, one feature per file, listed in load order in the `.toc`.
 
@@ -57,8 +57,8 @@ Code or docs written for retail or Classic often breaks here:
 
 ```
 yancer/
-├─ yancer-ui/            addon (junctioned into the game's AddOns folder)
-│  ├─ yancer-ui.toc
+├─ yancer-bars/          addon (junctioned into the game's AddOns folder)
+│  ├─ yancer-bars.toc
 │  ├─ embeds.xml         loads Libs/
 │  ├─ Bindings.xml       keybind entries (auto-loaded by the client)
 │  ├─ Libs/              Ace3 r969 subset
@@ -68,7 +68,7 @@ yancer/
 │  ├─ link.ps1           junction every yancer-* folder into WoW's AddOns
 │  ├─ lint.ps1           luacheck every yancer-* addon
 │  ├─ luacheck.exe       luacheck 1.2.0 (auto-downloaded, not committed)
-│  └─ gen_shadow.py      regenerates yancer-ui/Media/Shadow.tga
+│  └─ gen_shadow.py      regenerates yancer-bars/Media/Shadow.tga
 ├─ .luacheckrc           lint config (Lua 5.1 + allowed WoW globals)
 └─ .luarc.json           Lua language server config (VS Code "Lua" extension)
 ```
@@ -83,25 +83,53 @@ yancer/
    add it to `read_globals` in `.luacheckrc` **and** `diagnostics.globals` in `.luarc.json`.
 4. **Test in-game:** `/reload`. Show Lua errors with `/console scriptErrors 1`.
    A new file listed in a `.toc`, or a new `.toc`, needs a full client restart, not just `/reload`.
-5. **Debug:** `/run print(YancerUI.db.profile.locked)`, `/dump <expr>` (Blizzard_DebugTools),
+5. **Debug:** `/run print(YancerBars.db.profile.locked)`, `/dump <expr>` (Blizzard_DebugTools),
    `/framestack` to inspect frames under the mouse.
 
-## yancer-ui
+## yancer-bars
 
-- `/yui` or `/yancer` opens the options (also in Interface → AddOns → yancer-ui).
-- `/yui move` toggles moving mode (drag the blue overlays). `/yui lock` and `/yui unlock` set it directly.
+- `/yb` (or `/yancerbars`) opens the settings (also in Interface → AddOns → yancer-bars).
+- `/yb move` toggles moving mode (drag the blue overlays). `/yb lock` and `/yb unlock` set it directly.
   Bars lock automatically when you enter combat.
 - **Action bars:** up to 10 bars with 1–12 real action buttons each. Each bar shows one action page
-  (12 slots). The defaults are Main Bar = page 1, Bar 2 = page 6 (Blizzard's bottom-left bar),
-  Bar 3 = page 5 (bottom-right).
+  (12 slots). The defaults recreate Blizzard's five bars in the same slots:
+
+  | Bar | Page | Blizzard bar |
+  |---|---|---|
+  | Main Bar | 1 (with paging) | main bar |
+  | Bottom Left Bar | 6 | bottom left |
+  | Bottom Right Bar | 5 | bottom right |
+  | Right Bar | 3 | right |
+  | Right Bar 2 | 4 | right 2 |
+
+  Shortly after the first login, each of these stays shown if it was enabled in Blizzard's Interface
+  options or already holds spells, and is switched off otherwise. **Restore Blizzard Bars** (General)
+  recreates any that were deleted. A **New Bar** gets an unused page and appears mid-screen.
 - **Main Bar Paging:** switches pages like Blizzard's main bar (stances, forms, stealth, possess,
   Shift+1–6, Shift+wheel).
-- **Keybinds:** Esc → Key Bindings → "yancer-ui Bar N".
-- **Per-bar settings:** buttons, buttons per row, button size, spacing, padding, position, strata,
-  background, border, bar shadow and button shadows, show empty buttons, hide in vehicle.
-- **Button style:** Clean (square icons, thin border) or Blizzard default.
+- **Hide Blizzard Action Bars** (on by default) hides the default buttons, the side and bottom bars, and the
+  bar art. The XP bar, bags, micro menu, and stance and pet bars stay. The hidden Blizzard buttons still
+  work, so the default keybinds (1–=, bottom and side bar binds) keep casting, and their keys are shown
+  on our buttons that share those slots. Turning it off needs a `/reload`.
+- **Keybinds:** Esc → Key Bindings → "yancer-bars Bar N". These take priority over the Blizzard binds in the
+  button labels.
+- **Per-bar settings** (tabs in `/yb` → Bars):
+  - **General:** name, enabled, action page, main-bar paging, show empty buttons.
+  - **Layout:** buttons, buttons per row, rows grow up or down, button size, spacing, padding,
+    position, strata, level.
+  - **Visibility:** always / in combat only / custom macro conditions (e.g. `[combat][harm] show; hide`),
+    hide in vehicle, opacity, fade unless mouseover (faded bars return while moving bars or holding
+    a spell on the cursor).
+  - **Appearance:** bar background, border and shadow; button background, border and shadow.
+  - **Text:** keybinds, macro names, stack count sizes, range dot, cooldown timers.
+- **Range & mana coloring:** icons tint red out of range, blue without mana, grey when unusable.
+- **Cooldown timers:** cooldowns shorter than the minimum (default 2s, which hides the GCD) get no timer.
+  OmniCC is told to skip our buttons while timers are on.
+- **Moving:** a grid shows while unlocked (red centre lines), and dropped bars snap their centre to it.
+  Both are optional, and the grid size is adjustable.
+- **Button style:** Clean (square icons, thin border, flat hover/pressed/active overlays) or Blizzard default.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
-- **Reusable API for other yancer addons:** `YancerUI:CreateShadow(frame)`,
-  `YancerUI:UpdateShadow(frame, size, {r,g,b,a})`, `YancerUI:CreateMover(frame, label, onMoved)`.
-- **Other bar addons:** Blizzard's bars and bar addons like Dominos use the same action slots, so
-  they show the same spells. Disable Dominos if you only want yancer-ui bars.
+- **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
+  `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.
+- **Other bar addons:** bar addons like Dominos use the same action slots, so they show the same
+  spells. Disable Dominos if you only want yancer-bars.

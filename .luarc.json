@@ -10,8 +10,8 @@
 	"diagnostics.libraryFiles": "Disable",
 	"diagnostics.ignoredFiles": "Disable",
 	"diagnostics.globals": [
-		"YancerUI",
-		"yancerUIDB",
+		"YancerBars",
+		"yancerBarsDB",
 		"LibStub",
 		"CreateFrame",
 		"UIParent",
@@ -33,6 +33,13 @@
 		"ActionButton_ShowGrid",
 		"ActionButton_HideGrid",
 		"GetBindingKey",
-		"RANGE_INDICATOR"
+		"RANGE_INDICATOR",
+		"GetActionCooldown",
+		"MainMenuBar",
+		"MouseIsOver",
+		"GetCursorInfo",
+		"HasAction",
+		"IsUsableAction",
+		"IsActionInRange"
 	]
 }

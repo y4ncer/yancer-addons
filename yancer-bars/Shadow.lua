@@ -1,10 +1,10 @@
 local _, ns = ...
-local YUI = ns.YUI
+local YB = ns.YB
 
 -- Media/Shadow.tga is a radial falloff. Its quadrants are used as the corners
 -- and its centre row/column are stretched along the edges (a 9-slice without
 -- the middle), so the shadow only ever draws outside the frame.
-local TEXTURE = YUI.MEDIA .. "Shadow"
+local TEXTURE = YB.MEDIA .. "Shadow"
 
 local PIECES = {
 	-- texcoords: left, right, top, bottom
@@ -35,7 +35,7 @@ local function anchor(shadow, frame)
 end
 
 -- Adds shadow textures to any frame (once). Returns the piece table.
-function YUI:CreateShadow(frame)
+function YB:CreateShadow(frame)
 	if frame.yShadow then
 		return frame.yShadow
 	end
@@ -52,7 +52,7 @@ function YUI:CreateShadow(frame)
 end
 
 -- size <= 0 hides the shadow. color is a { r, g, b, a } table.
-function YUI:UpdateShadow(frame, size, color)
+function YB:UpdateShadow(frame, size, color)
 	local shadow = self:CreateShadow(frame)
 	local show = size and size > 0
 	for key, tex in pairs(shadow) do

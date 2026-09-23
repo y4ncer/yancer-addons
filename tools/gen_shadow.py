@@ -1,4 +1,4 @@
-"""Generate yancer-ui/Media/Shadow.tga.
+"""Generate yancer-bars/Media/Shadow.tga.
 
 A 64x64 white texture whose alpha falls off radially from the centre.
 The addon slices it 9-patch style with SetTexCoord: the four quadrants are
@@ -13,7 +13,7 @@ import struct
 
 SIZE = 64
 HALF = SIZE / 2
-OUT = os.path.join(os.path.dirname(__file__), "..", "yancer-ui", "Media", "Shadow.tga")
+OUT = os.path.join(os.path.dirname(__file__), "..", "yancer-bars", "Media", "Shadow.tga")
 
 
 def alpha(x, y):

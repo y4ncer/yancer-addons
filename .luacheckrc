@@ -11,8 +11,8 @@ exclude_files = {
 
 -- Globals our addons are allowed to create.
 globals = {
-	"YancerUI",
-	"yancerUIDB",
+	"YancerBars",
+	"yancerBarsDB",
 }
 
 -- WoW 3.3.5a API used by our code. Add to this list as new API is used;
@@ -41,4 +41,11 @@ read_globals = {
 	"ActionButton_HideGrid",
 	"GetBindingKey",
 	"RANGE_INDICATOR",
+	"GetActionCooldown",
+	"MainMenuBar",
+	"MouseIsOver",
+	"GetCursorInfo",
+	"HasAction",
+	"IsUsableAction",
+	"IsActionInRange",
 }

@@ -6,6 +6,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 |---|---|---|
 | `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 | `yancer-chat` | v0.1.0 | Square, movable chat: class colours, short channels, timestamps, clickable URLs, copy chat, better scrolling. Needs yancer-bars. |
+| `yancer-frames` | v0.1.0 | Custom Player, Target and Focus frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
 
 ## Conventions
 
@@ -169,6 +170,22 @@ Needs yancer-bars (its settings live in `/yb` → Chat, and it uses the same mov
 - **Scrolling & fading:** wheel scrolls N lines, Shift+wheel jumps to top/bottom, Ctrl+wheel scrolls a
   page; history length; fading on/off and how long lines stay.
 - Turning off the square style or showing the buttons again needs a `/reload`.
+
+## yancer-frames
+
+Needs yancer-bars (its settings live in `/yb` → Unit Frames, and it uses the same movers and outline).
+
+- Replaces Blizzard's Player, Target and Focus frames (plus combo points and the target-of-target frames)
+  with square frames: health and power bars, name and level, a 3D or 2D portrait on either side.
+  Left-click targets, right-click opens Blizzard's unit menu. Works with Clique.
+- **Per unit** (a tab each): enabled, width, health/power height, scale; class-coloured health for
+  players and reaction colours for NPCs (or a fixed colour); health text (current, percent, both,
+  missing) and power text; portrait style and side; name, level, **Horde / Alliance (PvP) icon**,
+  raid mark and party leader icons (player: combat/resting icon); auras above the frame (size, count,
+  only my debuffs); a cast bar below it; combo points on the target. **Reset Position** puts it back.
+- Placed with `/yb move`. While unlocked every frame shows, with sample values when the unit doesn't exist.
+- The pet frame, death knight runes and shaman totem timers stay, below the Player frame.
+- Turning a frame off needs a `/reload` to get Blizzard's back.
 
 ## Module API (yancer-bars)
 

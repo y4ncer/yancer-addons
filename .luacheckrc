@@ -21,6 +21,8 @@ globals = {
 	"SetItemRef",
 	"YancerFrames",
 	"yancerFramesDB",
+	"YancerBags",
+	"yancerBagsDB",
 }
 
 -- WoW 3.3.5a API used by our code. Add to this list as new API is used;
@@ -111,4 +113,24 @@ read_globals = {
 	"UnitAffectingCombat",
 	"IsResting",
 	"GetComboPoints",
+	"NUM_BAG_SLOTS",
+	"NUM_BANKBAGSLOTS",
+	"PlaySound",
+	"GetContainerNumSlots",
+	"GetContainerItemLink",
+	"GetItemInfo",
+	"GetContainerItemInfo",
+	"GetContainerItemQuestInfo",
+	"SetItemButtonTexture",
+	"SetItemButtonCount",
+	"SetItemButtonDesaturated",
+	"TEXTURE_ITEM_QUEST_BANG",
+	"ITEM_QUALITY_COLORS",
+	"ContainerFrame_UpdateCooldown",
+	"GetContainerNumFreeSlots",
+	"GetMoney",
+	"strlower",
+	"strfind",
+	"CloseBankBagFrames",
+	"BankFrame",
 }

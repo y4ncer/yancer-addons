@@ -152,8 +152,15 @@ local function barOptions(id, order)
 						desc = "Switch pages like Blizzard's main bar: stances/forms/stealth, "
 							.. "possess and vehicles, and Shift+1-6 / Shift+mouse wheel.",
 					},
-					shadowDance = { type = "toggle", name = "Shadow Dance as Stealth", order = 13, hidden = perBarOnly,
+					shadowDance = { type = "toggle", name = "Shadow Dance as Stealth", order = 13,
+						hidden = function() return perBarOnly() or select(2, UnitClass("player")) ~= "ROGUE" end,
 						desc = "Rogues: while Shadow Dance is active, show the Stealth page like Stealth does.",
+						disabled = function() return not db().paging end,
+					},
+					druidProwl = { type = "toggle", name = "Prowl Page", order = 13,
+						hidden = function() return perBarOnly() or select(2, UnitClass("player")) ~= "DRUID" end,
+						desc = "Druids: Prowl in Cat Form shows its own page (8), so Cat Form has three states: "
+							.. "normal, Cat and Prowl. Page 8 starts empty: prowl and put your stealth spells on it.",
 						disabled = function() return not db().paging end,
 					},
 					showGrid = { type = "toggle", name = "Show Empty Buttons", order = 14 },

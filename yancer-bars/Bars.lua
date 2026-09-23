@@ -12,7 +12,7 @@ YB.PAGES = {
 	[5] = "5 - Bottom Right Bar",
 	[6] = "6 - Bottom Left Bar",
 	[7] = "7 - Stance / Form 1",
-	[8] = "8 - Stance / Form 2",
+	[8] = "8 - Stance / Form 2 (druid: Prowl)",
 	[9] = "9 - Stance / Form 3",
 	[10] = "10 - Stance / Form 4",
 }
@@ -32,7 +32,7 @@ YB.DEFAULT_BARS = {
 -- Same paging as Blizzard's main bar: possess/vehicle (page 11 = slots 121-132),
 -- Shift+1-6 / Shift+wheel pages, then stance/form/stealth bonus bars.
 local MAIN_PAGING = "[bonusbar:5] 11; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6; "
-	.. "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10; "
+local BONUS_PAGING = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10; "
 
 local function pageDriver(db)
 	if not db.paging then
@@ -40,6 +40,12 @@ local function pageDriver(db)
 	end
 	local driver = MAIN_PAGING
 	local _, class = UnitClass("player")
+	if class == "DRUID" and db.druidProwl then
+		-- Prowl keeps Blizzard on the cat page (bonus bar 1). Give it page 8, which is
+		-- Tree of Life's page: a spec can't have both, and each spec has its own bars.
+		driver = driver .. "[bonusbar:1,stealth] 8; "
+	end
+	driver = driver .. BONUS_PAGING
 	if class == "ROGUE" and db.shadowDance then
 		-- Shadow Dance is a rogue shapeshift form: page it like Stealth (page 7).
 		driver = driver .. "[form:2/3] 7; "

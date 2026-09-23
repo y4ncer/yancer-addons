@@ -36,6 +36,9 @@
 - yancer-frames v0.1.0 (custom Player/Target/Focus frames; the user chose custom frames over restyling
   Blizzard's) is **written but not yet confirmed in-game**. The first load needs a client restart.
 - Waiting on user confirmation: the chat-clamp and micro-menu latency-bar fixes (commit `72ebd07`).
+- **yancer-bags v0.1.0** (one merged square bag window) and the druid **Prowl Page** paging option
+  (`[bonusbar:1,stealth] 8`) are written but not yet confirmed in-game.
+- Bags ideas not done yet: merged bank window, sorting, bag slot bar inside the window, keyring.
 - Known gaps / ideas: the player frame doesn't swap to the vehicle unit; no pet / target-of-target /
   party frames of our own; `yancer-plates` (nameplates) was mentioned early on and postponed.
 

@@ -44,6 +44,7 @@ local defaults = {
 				page = 1,         -- action page 1-10 (12 slots each)
 				paging = false,   -- main-bar paging: stances/forms, possess, Shift+1-6
 				shadowDance = true, -- rogues: with paging, Shadow Dance uses the Stealth page
+				druidProwl = true,  -- druids: with paging, Prowl in Cat Form has its own page (8)
 				hideInVehicle = true,
 				visibility = "always", -- "always", "combat" or "custom"
 				visibilityCustom = "[combat] show; hide", -- macro conditions, used with "custom"

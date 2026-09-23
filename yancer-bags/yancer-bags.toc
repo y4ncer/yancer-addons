@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: |cff33ccffyancer|r-bags
+## Notes: All your bags in one square, searchable window.
+## Author: yancer
+## Version: 0.1.0
+## Dependencies: yancer-bars
+## SavedVariables: yancerBagsDB
+
+Core.lua
+Bags.lua
+Hooks.lua
+Options.lua

@@ -7,6 +7,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 | `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 | `yancer-chat` | v0.1.0 | Square, movable chat: class colours, short channels, timestamps, clickable URLs, copy chat, better scrolling. Needs yancer-bars. |
 | `yancer-frames` | v0.1.0 | Custom Player, Target and Focus frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
+| `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 
 ## Conventions
 
@@ -68,6 +69,7 @@ yancer/
 │  └─ *.lua
 ├─ yancer-chat/          module addon: Core, Style, Messages, Copy, Options (no Libs/)
 ├─ yancer-frames/        module addon: Core, Frames, Auras, CastBar, Options (no Libs/)
+├─ yancer-bags/          module addon: Core, Bags, Hooks, Options (no Libs/)
 ├─ tools/
 │  ├─ link.ps1           junction every yancer-* folder into WoW's AddOns
 │  ├─ lint.ps1           luacheck every yancer-* addon
@@ -111,7 +113,9 @@ yancer/
   recreates any that were deleted. A **New Bar** gets an unused page and appears mid-screen.
 - **Main Bar Paging:** switches pages like Blizzard's main bar (stances, forms, stealth, possess,
   Shift+1–6, Shift+wheel). For rogues, **Shadow Dance as Stealth** (on by default) also shows the
-  Stealth page during Shadow Dance.
+  Stealth page during Shadow Dance. For druids, **Prowl Page** (on by default) gives Prowl in Cat Form
+  its own page (8, Tree of Life's page, which a feral spec doesn't use), so Cat Form has three states:
+  normal, Cat and Prowl.
 - **Hide Blizzard Action Bars** (on by default) hides the default buttons, the side and bottom bars, and the
   bar art. The XP bar, bags, micro menu, and stance and pet bars stay. The default keybinds (1–=, bottom
   and side bar binds) are redirected with override bindings to our buttons on the same page, so they
@@ -188,6 +192,20 @@ Needs yancer-bars (its settings live in `/yb` → Unit Frames, and it uses the s
 - Placed with `/yb move`. While unlocked every frame shows, with sample values when the unit doesn't exist.
 - The pet frame, death knight runes and shaman totem timers stay, below the Player frame.
 - Turning a frame off needs a `/reload` to get Blizzard's back.
+
+## yancer-bags
+
+Needs yancer-bars (its settings live in `/yb` → Bags, and it uses the same movers and outline).
+
+- The backpack and the four bags in **one window**: square slots, quality-coloured borders (quest items
+  yellow), stack counts, cooldowns, free slots (general bags only) and gold. A search box dims items
+  whose name doesn't match.
+- Blizzard's bag functions are replaced for bags 0–4, so B, Shift+B, the bag keybinds, the bag bar
+  buttons, merchants, mail and Escape all use it. The **bank bags and keyring keep Blizzard's windows**.
+- Items work like Blizzard's (the slots are `ContainerFrameItemButtonTemplate` buttons in holder frames
+  whose ID is the bag): click, drag, sell, split stacks, link, socket.
+- Settings: columns, slot size, spacing, scale, background opacity, quality borders, Reset Position.
+  Placed with `/yb move` (the bag opens while unlocked). Turning **One Bag** off needs a `/reload`.
 
 ## Module API (yancer-bars)
 

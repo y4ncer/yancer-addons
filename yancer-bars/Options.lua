@@ -265,6 +265,52 @@ local function barOptions(id, order)
 	}
 end
 
+-- Options for one Blizzard UI element (see Elements.lua).
+local function elementOptions(el)
+	local function db()
+		return YB:GetElementDB(el.key)
+	end
+	return {
+		type = "group", name = el.name, order = el.order,
+		args = {
+			info = {
+				type = "description", order = 1, fontSize = "medium",
+				name = "Unlock with /yb move and drag the blue \"" .. el.name .. "\" box to place it.\n",
+			},
+			enabled = {
+				type = "toggle", name = "Move with yancer-bars", order = 2, width = "full",
+				desc = "Turning this off leaves the element where it is; /reload to give it back to Blizzard.",
+				get = function() return db().enabled end,
+				set = function(_, value)
+					db().enabled = value
+					YB:UpdateElement(el.key)
+					if not value then
+						YB:Print("Type /reload to give the " .. el.name .. " back to Blizzard.")
+					end
+				end,
+			},
+			scale = rangeOption("Scale", 3, 0.5, 2, 0.05, {
+				isPercent = true,
+				disabled = function() return not db().enabled end,
+				get = function() return db().scale end,
+				set = function(_, value)
+					db().scale = value
+					YB:UpdateElement(el.key)
+				end,
+			}),
+			reset = {
+				type = "execute", name = "Reset Position", order = 4,
+				disabled = function() return not db().enabled end,
+				func = function()
+					local d = db()
+					d.point, d.relPoint, d.x, d.y = nil, nil, nil, nil
+					YB:UpdateElement(el.key)
+				end,
+			},
+		},
+	}
+end
+
 function YB:SetupOptions()
 	local function profileGet(info)
 		return YB.db.profile[info[#info]]
@@ -375,6 +421,9 @@ function YB:SetupOptions()
 					},
 				},
 			},
+			elements = {
+				type = "group", name = "UI Elements", order = 3, args = {},
+			},
 			bars = {
 				type = "group", name = "Bars", order = 2, args = {},
 				-- Bars are secure frames: they can't be changed in combat.
@@ -384,6 +433,10 @@ function YB:SetupOptions()
 		},
 	}
 	options.args.profiles.order = 100
+
+	for _, el in ipairs(YB.ELEMENTS) do
+		options.args.elements.args[el.key] = elementOptions(el)
+	end
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, options)
 	AceConfigDialog:SetDefaultSize(addonName, 800, 620)

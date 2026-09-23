@@ -4,7 +4,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-bars` | v0.6.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers). |
+| `yancer-bars` | v0.7.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 
 ## Conventions
 
@@ -134,6 +134,14 @@ yancer/
   hover/pressed/active/auto-attack overlays, equipped items get a green border) or Blizzard default.
   Blizzard re-applies its rounded slot art on every button update, so the Square style strips it again
   in a hook on `ActionButton_Update`.
+- **UI Elements** (`/yb` → UI Elements): moves Blizzard's other pieces: XP bar, reputation bar, buffs,
+  debuffs, stance bar (rogues: Stealth / Shadow Dance), pet bar, possess bar, totem bar, micro menu
+  (Character, Spellbook, …), bags and cast bar. Each is dragged in `/yb move` like the bars
+  (right-click opens its settings) and has its own scale and **Reset Position**. Blizzard keeps
+  re-anchoring several of these (the frame position manager, vehicles, reputation updates, the
+  pet bar slide-in), so after any Blizzard `SetPoint` on them yancer-bars puts them back. The stance,
+  pet, possess and totem bars hold secure buttons and are only re-placed out of combat.
+  Turning an element off leaves it where it is until `/reload`.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.

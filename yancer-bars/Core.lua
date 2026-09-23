@@ -24,6 +24,13 @@ local defaults = {
 		moveGrid = true,
 		snapToGrid = true,
 		gridSize = 16,
+		-- Blizzard UI elements made movable (see Elements.lua). No position = the element's default.
+		elements = {
+			["**"] = {
+				enabled = true,
+				scale = 1,
+			},
+		},
 		bars = {
 			-- Defaults for every bar. "name" is deliberately left out: it is
 			-- always set explicitly, which keeps AceDB from pruning a bar
@@ -130,6 +137,7 @@ function YB:Refresh()
 		end
 	end
 	self:UpdateAllBars()
+	self:UpdateElements()
 	self:SetLocked(profile.locked)
 	self:RefreshOptions()
 end
@@ -144,6 +152,9 @@ function YB:PLAYER_REGEN_DISABLED()
 end
 
 function YB:PLAYER_REGEN_ENABLED()
+	if self.elementsPending then
+		self:UpdateElements()
+	end
 	if self.refreshPending then
 		self.refreshPending = nil
 		self:Refresh()

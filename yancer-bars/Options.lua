@@ -438,6 +438,10 @@ function YB:SetupOptions()
 		},
 	}
 	options.args.profiles.order = 100
+	options.args.profiles.name = "Profiles (Bars)"
+	for key, group in pairs(self.moduleOptions or {}) do
+		options.args[key] = group
+	end
 
 	for _, el in ipairs(YB.ELEMENTS) do
 		options.args.elements.args[el.key] = elementOptions(el)
@@ -508,6 +512,22 @@ function YB:RefreshOptions()
 	else
 		args[ALL] = barOptions(ALL, 0)
 	end
+	AceConfigRegistry:NotifyChange(addonName)
+end
+
+-- Module API: other yancer addons (yancer-chat, yancer-frames) add their own
+-- top-level group to the /yb window. Give it an order between 10 and 99.
+function YB:RegisterModuleOptions(key, group)
+	self.moduleOptions = self.moduleOptions or {}
+	self.moduleOptions[key] = group
+	if options then
+		options.args[key] = group
+		AceConfigRegistry:NotifyChange(addonName)
+	end
+end
+
+-- Redraws an open /yb window after a module changed its option tables.
+function YB:NotifyOptionsChanged()
 	AceConfigRegistry:NotifyChange(addonName)
 end
 

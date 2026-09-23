@@ -1,0 +1,13 @@
+## Interface: 30300
+## Title: |cff33ccffyancer|r-chat
+## Notes: Square, movable chat with class colors, short channels, URL copy and better scrolling.
+## Author: yancer
+## Version: 0.1.0
+## Dependencies: yancer-bars
+## SavedVariables: yancerChatDB
+
+Core.lua
+Style.lua
+Messages.lua
+Copy.lua
+Options.lua

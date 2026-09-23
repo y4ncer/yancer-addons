@@ -13,6 +13,14 @@ exclude_files = {
 globals = {
 	"YancerBars",
 	"yancerBarsDB",
+	-- Blizzard tables addons add entries to
+	"StaticPopupDialogs",
+	"UISpecialFrames",
+	"YancerChat",
+	"yancerChatDB",
+	"SetItemRef",
+	"YancerFrames",
+	"yancerFramesDB",
 }
 
 -- WoW 3.3.5a API used by our code. Add to this list as new API is used;
@@ -43,6 +51,16 @@ read_globals = {
 	"RANGE_INDICATOR",
 	"GetActionCooldown",
 	"MainMenuBar",
+	"NUM_CHAT_WINDOWS",
+	"CHAT_FRAME_TEXTURES",
+	"FCF_SetLocked",
+	"IsShiftKeyDown",
+	"IsControlKeyDown",
+	"SetChatColorNameByClass",
+	"SetCVar",
+	"StaticPopup_Show",
+	"CLOSE",
+	"ChatFontNormal",
 	"IsEquippedAction",
 	"ClearOverrideBindings",
 	"SetOverrideBindingClick",

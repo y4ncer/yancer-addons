@@ -9,10 +9,16 @@ local YB = ns.YB
 
 local outlined = {} -- frames carrying the shared outline, re-drawn when its settings change
 
-local function outline(frame)
+-- Public: gives any frame the shared outline (UI Elements > Style). Other
+-- yancer addons use this so everything shares one look.
+function YB:Outline(frame)
 	outlined[frame] = true
-	local p = YB.db.profile
-	YB:UpdateShadow(frame, p.skinOutlineSize, p.skinOutlineColor, p.skinOutlineStyle)
+	local p = self.db.profile
+	self:UpdateShadow(frame, p.skinOutlineSize, p.skinOutlineColor, p.skinOutlineStyle)
+end
+
+local function outline(frame)
+	YB:Outline(frame)
 end
 
 function YB:UpdateSkinOutlines()
@@ -21,10 +27,15 @@ function YB:UpdateSkinOutlines()
 	end
 end
 
-local function squareBackdrop(frame)
-	frame:SetBackdrop({ bgFile = YB.WHITE, edgeFile = YB.WHITE, edgeSize = 1 })
-	frame:SetBackdropColor(0, 0, 0, 0.5)
+-- Public: square backdrop, dark background and a 1px black border.
+function YB:SquareBackdrop(frame, bgAlpha)
+	frame:SetBackdrop({ bgFile = self.WHITE, edgeFile = self.WHITE, edgeSize = 1 })
+	frame:SetBackdropColor(0, 0, 0, bgAlpha or 0.5)
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
+end
+
+local function squareBackdrop(frame)
+	YB:SquareBackdrop(frame)
 end
 
 local function hide(name)

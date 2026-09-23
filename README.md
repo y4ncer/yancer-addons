@@ -5,6 +5,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 | Addon | Status | What it does |
 |---|---|---|
 | `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
+| `yancer-chat` | v0.1.0 | Square, movable chat: class colours, short channels, timestamps, clickable URLs, copy chat, better scrolling. Needs yancer-bars. |
 
 ## Conventions
 
@@ -153,3 +154,30 @@ yancer/
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.
 - **Other bar addons:** bar addons like Dominos use the same action slots, so they show the same
   spells. Disable Dominos if you only want yancer-bars.
+
+## yancer-chat
+
+Needs yancer-bars (its settings live in `/yb` → Chat, and it uses the same movers and outline).
+
+- **Look & Position:** square style (flat background with the shared outline, no Blizzard frame art or
+  tab art, square input box), background opacity, hide the scroll/menu/friends buttons, input box above
+  or below the chat. The main chat window (and the windows docked to it) is placed with `/yb move`
+  and sized with Width/Height; Blizzard's tab dragging is locked while yancer-chat manages it.
+- **Messages:** class-coloured names in every chat type, short channel names (`[G]`, `[P]`, `[RW]`,
+  `[2]` …), timestamps, clickable URLs (click to get the link ready to copy), and a **C** button on each
+  window that opens its last 300 lines as copyable text.
+- **Scrolling & fading:** wheel scrolls N lines, Shift+wheel jumps to top/bottom, Ctrl+wheel scrolls a
+  page; history length; fading on/off and how long lines stay.
+- Turning off the square style or showing the buttons again needs a `/reload`.
+
+## Module API (yancer-bars)
+
+Other yancer addons declare `## Dependencies: yancer-bars` and get the addon with
+`LibStub("AceAddon-3.0"):GetAddon("yancer-bars")`. They use the libraries yancer-bars loads, so they
+need no `Libs/` folder.
+
+- `YB:CreateMover(frame, label, onMoved, onRightClick)`: drag in `/yb move`, grid snapping, combat lock.
+- `YB:Outline(frame)`: the shared outline (UI Elements → Style), kept in sync when it changes.
+- `YB:SquareBackdrop(frame, bgAlpha)`, `YB:UpdateShadow(frame, size, color, style)`.
+- `YB:RegisterModuleOptions(key, group)`: adds a top-level AceConfig group (order 10–99) to `/yb`.
+  `YB:OpenOptions(key, ...)` opens it, `YB:NotifyOptionsChanged()` redraws it.

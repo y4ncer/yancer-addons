@@ -43,6 +43,23 @@
 		"IsActionInRange",
 		"ClearOverrideBindings",
 		"SetOverrideBindingClick",
-		"IsEquippedAction"
+		"IsEquippedAction",
+		"YancerChat",
+		"yancerChatDB",
+		"SetItemRef",
+		"YancerFrames",
+		"yancerFramesDB",
+		"NUM_CHAT_WINDOWS",
+		"CHAT_FRAME_TEXTURES",
+		"FCF_SetLocked",
+		"IsShiftKeyDown",
+		"IsControlKeyDown",
+		"SetChatColorNameByClass",
+		"SetCVar",
+		"StaticPopupDialogs",
+		"StaticPopup_Show",
+		"CLOSE",
+		"UISpecialFrames",
+		"ChatFontNormal"
 	]
 }

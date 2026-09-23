@@ -17,7 +17,8 @@ local defaults = {
 		defaultsVersion = 0,       -- 2 = Blizzard's five bars have been created
 		checkBlizzardBars = false, -- match new default bars to Blizzard's settings after login
 		hideBlizzard = true,
-		style = "clean", -- "clean" or "blizzard" button look
+		style = "clean", -- "clean" (square) or "blizzard" button look
+		iconZoom = 0.08, -- square style: fraction cropped off each icon edge
 		rangeColoring = true,
 		cooldownMinDuration = 2, -- shorter cooldowns (the global cooldown) get no timer text
 		moveGrid = true,
@@ -54,13 +55,14 @@ local defaults = {
 				bgColor = { r = 0.06, g = 0.06, b = 0.06, a = 0.85 },
 				borderColor = { r = 0, g = 0, b = 0, a = 1 },
 				borderSize = 1,
+				shadowStyle = "outline", -- bar and button borders: "outline" (solid) or "soft"
 				shadow = {
 					enabled = true,
-					size = 8,
+					size = 2,
 					color = { r = 0, g = 0, b = 0, a = 0.9 },
 				},
 				buttonShadow = true,
-				buttonShadowSize = 4,
+				buttonShadowSize = 1,
 				buttonBgColor = { r = 0, g = 0, b = 0, a = 0.5 },
 				buttonBorderColor = { r = 0, g = 0, b = 0, a = 1 },
 				hotkeyFontSize = 12,

@@ -43,6 +43,7 @@ read_globals = {
 	"RANGE_INDICATOR",
 	"GetActionCooldown",
 	"MainMenuBar",
+	"IsEquippedAction",
 	"ClearOverrideBindings",
 	"SetOverrideBindingClick",
 	"MouseIsOver",

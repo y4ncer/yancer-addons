@@ -168,7 +168,7 @@ function YB:UpdateBar(id)
 	local bg, border = db.bgColor, db.borderColor
 	header:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
 	header:SetBackdropBorderColor(border.r, border.g, border.b, border.a)
-	self:UpdateShadow(header, db.shadow.enabled and db.shadow.size or 0, db.shadow.color)
+	self:UpdateShadow(header, db.shadow.enabled and db.shadow.size or 0, db.shadow.color, db.shadowStyle)
 
 	layoutButtons(header, db)
 

@@ -174,23 +174,59 @@ end)
 
 -- Styling
 
+-- Blizzard's ActionButton_Update puts its rounded art back on every change:
+-- the slot frame (SetNormalTexture) and the green glow on equipped items.
+-- For the square style this strips the frame again and shows equipped items
+-- as a green button border instead.
+function YB:UpdateButtonArt(button)
+	local normal = button:GetNormalTexture()
+	local size = button:GetWidth()
+	if self.db.profile.style ~= "clean" then
+		if not normal or not normal:GetTexture() then
+			button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+			normal = button:GetNormalTexture()
+		end
+		-- The template's art is sized for a 36px button.
+		normal:SetWidth(size * 66 / 36)
+		normal:SetHeight(size * 66 / 36)
+		return
+	end
+	if normal then
+		normal:SetTexture(nil)
+	end
+	_G[button:GetName() .. "Border"]:Hide()
+	local c = button.yBorderColor
+	if button.action and IsEquippedAction(button.action) then
+		button:SetBackdropBorderColor(0, 1, 0, 1)
+	elseif c then
+		button:SetBackdropBorderColor(c.r, c.g, c.b, c.a)
+	end
+end
+
+hooksecurefunc("ActionButton_Update", function(button)
+	if button.yancer then
+		YB:UpdateButtonArt(button)
+	end
+end)
+
 function YB:StyleButton(button, db)
 	local name = button:GetName()
 	local size = db.buttonSize
 	local icon = _G[name .. "Icon"]
-	local normal = _G[name .. "NormalTexture"]
 	local cooldown = _G[name .. "Cooldown"]
 	local border = _G[name .. "Border"]
+	local flash = _G[name .. "Flash"]
 	local macroText = _G[name .. "Name"]
 
 	button:SetWidth(size)
 	button:SetHeight(size)
 	icon:ClearAllPoints()
+	button.yBorderColor = db.buttonBorderColor
 
 	local highlight = button:GetHighlightTexture()
 	local pushed = button:GetPushedTexture()
 	local checked = button:GetCheckedTexture()
-	for _, tex in ipairs({ highlight, pushed, checked }) do
+	for _, tex in ipairs({ highlight, pushed, checked, flash }) do
 		tex:ClearAllPoints()
 	end
 
@@ -199,38 +235,39 @@ function YB:StyleButton(button, db)
 		button:SetBackdrop({ bgFile = self.WHITE, edgeFile = self.WHITE, edgeSize = 1 })
 		button:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
 		button:SetBackdropBorderColor(bc.r, bc.g, bc.b, bc.a)
-		icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+		-- Cropping the icon edges removes the rounded corners baked into the art.
+		local zoom = self.db.profile.iconZoom
+		icon:SetTexCoord(zoom, 1 - zoom, zoom, 1 - zoom)
 		icon:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
 		icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
-		normal:SetAlpha(0)
-		-- Flat overlays instead of Blizzard's glowing square art.
+		-- Flat overlays instead of Blizzard's rounded art.
 		highlight:SetTexture(self.WHITE)
 		highlight:SetVertexColor(1, 1, 1, 0.2)
 		pushed:SetTexture(self.WHITE)
 		pushed:SetVertexColor(0, 0, 0, 0.4)
 		checked:SetTexture(self.WHITE)
 		checked:SetVertexColor(1, 0.82, 0, 0.35)
-		for _, tex in ipairs({ highlight, pushed, checked }) do
+		flash:SetTexture(self.WHITE)
+		flash:SetVertexColor(1, 0, 0, 0.35)
+		for _, tex in ipairs({ highlight, pushed, checked, flash }) do
 			tex:SetAllPoints(icon)
 		end
 	else
 		button:SetBackdrop(nil)
 		icon:SetTexCoord(0, 1, 0, 1)
 		icon:SetAllPoints(button)
-		normal:SetAlpha(1)
-		-- The template's art is sized for a 36px button.
-		normal:SetWidth(size * 66 / 36)
-		normal:SetHeight(size * 66 / 36)
 		highlight:SetTexture("Interface\\Buttons\\ButtonHilight-Square")
 		pushed:SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
 		checked:SetTexture("Interface\\Buttons\\CheckButtonHilight")
-		for _, tex in ipairs({ highlight, pushed, checked }) do
+		flash:SetTexture("Interface\\Buttons\\UI-QuickslotRed")
+		for _, tex in ipairs({ highlight, pushed, checked, flash }) do
 			tex:SetVertexColor(1, 1, 1, 1)
 			tex:SetAllPoints(button)
 		end
 	end
 	highlight:SetBlendMode("ADD")
 	checked:SetBlendMode("ADD")
+	self:UpdateButtonArt(button)
 
 	border:SetWidth(size * 62 / 36)
 	border:SetHeight(size * 62 / 36)
@@ -238,7 +275,7 @@ function YB:StyleButton(button, db)
 	cooldown:SetAllPoints(icon)
 	cooldown:SetFrameLevel(button:GetFrameLevel() + 1)
 
-	self:UpdateShadow(button, db.buttonShadow and db.buttonShadowSize or 0, db.shadow.color)
+	self:UpdateShadow(button, db.buttonShadow and db.buttonShadowSize or 0, db.shadow.color, db.shadowStyle)
 
 	-- Text
 	local hotkey = _G[name .. "HotKey"]

@@ -42,6 +42,7 @@
 		"IsUsableAction",
 		"IsActionInRange",
 		"ClearOverrideBindings",
-		"SetOverrideBindingClick"
+		"SetOverrideBindingClick",
+		"IsEquippedAction"
 	]
 }

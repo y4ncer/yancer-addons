@@ -16,8 +16,13 @@ local STRATA = {
 }
 
 local STYLES = {
-	clean = "Clean (square icons, flat highlights)",
-	blizzard = "Blizzard default",
+	clean = "Square (no Blizzard frame, flat highlights)",
+	blizzard = "Blizzard default (rounded frame)",
+}
+
+local SHADOW_STYLES = {
+	outline = "Outline (solid)",
+	soft = "Soft shadow",
 }
 
 local VISIBILITY = {
@@ -212,26 +217,29 @@ local function barOptions(id, order)
 			appearance = {
 				type = "group", name = "Appearance", order = 4,
 				args = {
+					shadowStyle = { type = "select", name = "Outline Style", order = 0, values = SHADOW_STYLES,
+						desc = "How the bar and button outlines look: a crisp solid line, or a soft shadow.",
+					},
 					barHeader = header("Bar", 1),
 					bgColor = colorOption("Background", 2, function(d) return d.bgColor end),
 					borderColor = colorOption("Border", 3, function(d) return d.borderColor end),
 					borderSize = rangeOption("Border Size", 4, 0, 10, 1),
-					shadowEnabled = { type = "toggle", name = "Bar Shadow", order = 5,
+					shadowEnabled = { type = "toggle", name = "Bar Outline", order = 5,
 						get = shadowEnabledGet, set = shadowEnabledSet },
-					shadowSize = rangeOption("Bar Shadow Size", 6, 1, 40, 1, {
+					shadowSize = rangeOption("Bar Outline Size", 6, 1, 40, 1, {
 						get = shadowSizeGet, set = shadowSizeSet,
 						disabled = function() return not db().shadow.enabled end,
 					}),
-					shadowColor = colorOption("Shadow Color", 7, function(d) return d.shadow.color end),
+					shadowColor = colorOption("Outline Color", 7, function(d) return d.shadow.color end),
 					buttonHeader = header("Buttons", 10),
 					buttonBgColor = colorOption("Button Background", 11, function(d) return d.buttonBgColor end),
 					buttonBorderColor = colorOption("Button Border", 12, function(d) return d.buttonBorderColor end),
 					buttonColorNote = {
 						type = "description", order = 13,
-						name = "Button colors apply to the Clean style.",
+						name = "Button colors apply to the Square style.",
 					},
-					buttonShadow = { type = "toggle", name = "Button Shadows", order = 14 },
-					buttonShadowSize = rangeOption("Button Shadow Size", 15, 1, 20, 1, {
+					buttonShadow = { type = "toggle", name = "Button Outlines", order = 14 },
+					buttonShadowSize = rangeOption("Button Outline Size", 15, 1, 20, 1, {
 						disabled = function() return not db().buttonShadow end,
 					}),
 				},
@@ -310,15 +318,25 @@ function YB:SetupOptions()
 							YB:UpdateAllBars()
 						end,
 					},
+					iconZoom = rangeOption("Icon Zoom", 12, 0, 0.25, 0.01, {
+						isPercent = true,
+						desc = "Square style: how much of each icon's edge is cropped. "
+							.. "About 8% removes the rounded corners of Blizzard's icons.",
+						disabled = function() return YB.db.profile.style ~= "clean" or InCombatLockdown() end,
+						set = function(_, value)
+							YB.db.profile.iconZoom = value
+							YB:UpdateAllBars()
+						end,
+					}),
 					rangeColoring = {
-						type = "toggle", name = "Range & Mana Coloring", order = 12,
+						type = "toggle", name = "Range & Mana Coloring", order = 13,
 						desc = "Tint icons red when out of range, blue without enough mana, grey when unusable.",
 						set = function(_, value)
 							YB.db.profile.rangeColoring = value
 							YB:UpdateTicker()
 						end,
 					},
-					cooldownMinDuration = rangeOption("Min. Cooldown for Timer", 13, 0, 10, 0.5, {
+					cooldownMinDuration = rangeOption("Min. Cooldown for Timer", 14, 0, 10, 0.5, {
 						desc = "Cooldowns shorter than this (seconds) get no timer. 2 hides the global cooldown.",
 					}),
 					barsHeader = header("Bars", 20),

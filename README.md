@@ -4,7 +4,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-bars` | v0.5.0 | Replaces Blizzard's action bars with movable, customizable bars (fading, range colouring, cooldown timers, shadows). |
+| `yancer-bars` | v0.6.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers). |
 
 ## Conventions
 
@@ -122,14 +122,18 @@ yancer/
   - **Visibility:** always / in combat only / custom macro conditions (e.g. `[combat][harm] show; hide`),
     hide in vehicle, opacity, fade unless mouseover (faded bars return while moving bars or holding
     a spell on the cursor).
-  - **Appearance:** bar background, border and shadow; button background, border and shadow.
+  - **Appearance:** outline style (solid outline or soft shadow); bar background, border and outline;
+    button background, border and outline.
   - **Text:** keybinds, macro names, stack count sizes, range dot, cooldown timers.
 - **Range & mana coloring:** icons tint red out of range, blue without mana, grey when unusable.
 - **Cooldown timers:** cooldowns shorter than the minimum (default 2s, which hides the GCD) get no timer.
   OmniCC is told to skip our buttons while timers are on.
 - **Moving:** a grid shows while unlocked (red centre lines), and dropped bars snap their centre to it.
   Both are optional, and the grid size is adjustable.
-- **Button style:** Clean (square icons, thin border, flat hover/pressed/active overlays) or Blizzard default.
+- **Button style:** Square (no Blizzard frame, icons cropped by **Icon Zoom** to remove the rounded corners, flat
+  hover/pressed/active/auto-attack overlays, equipped items get a green border) or Blizzard default.
+  Blizzard re-applies its rounded slot art on every button update, so the Square style strips it again
+  in a hook on `ActionButton_Update`.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.

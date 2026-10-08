@@ -216,4 +216,5 @@ read_globals = {
 	"CastingBarFrameIcon",
 	"UnitGUID",
 	"bit",
+	"SlashCmdList",
 }

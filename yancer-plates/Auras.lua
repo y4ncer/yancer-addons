@@ -113,8 +113,11 @@ local function createIcon(p)
 end
 
 function ns.CreatePlateAuras(p)
+	-- The row needs a real size: a frame with no width may not be drawn.
 	p.auraRow = CreateFrame("Frame", nil, p.frame)
-	p.auraRow:SetHeight(1)
+	p.auraRow:SetWidth(100)
+	p.auraRow:SetHeight(14)
+	p.auraRow:SetFrameLevel(p.frame:GetFrameLevel() + 10)
 	p.auraIcons = {}
 end
 
@@ -124,6 +127,7 @@ function ns.LayoutPlateAuras(p)
 	local s = db()
 	p.auraRow:ClearAllPoints()
 	p.auraRow:SetPoint("BOTTOM", p.name, "TOP", 0, 2)
+	p.auraRow:SetWidth(math.max(s.width, (s.auraWidth + 2) * s.maxAuras))
 	p.auraRow:SetHeight(s.auraHeight)
 	for _, f in ipairs(p.auraIcons) do
 		f:SetWidth(s.auraWidth)
@@ -208,6 +212,26 @@ function ns.UpdatePlateAuras(p, isTarget)
 		p.classFrame:ClearAllPoints()
 		p.classFrame:SetPoint("BOTTOM", anchor, "TOP", 0, count > 0 and 4 or 2)
 	end
+end
+
+-- /yplates: what the addon knows about your target's plate (for bug reports).
+function ns.DebugTarget(p)
+	local guid = UnitGUID("target")
+	local list = guid and auras[guid]
+	local n = 0
+	for _ in pairs(list or {}) do
+		n = n + 1
+	end
+	YB:Print(format("target guid %s: %d debuffs known (auras %s, only mine %s)", tostring(guid), n,
+		tostring(db().auras), tostring(db().onlyMyDebuffs)))
+	if not p then
+		YB:Print("no nameplate matched as your target (is its plate shown? V toggles them)")
+		return
+	end
+	local first = p.auraIcons[1]
+	YB:Print(format("plate guid %s, row %dx%d shown %s, icons %d, first shown %s",
+		tostring(p.guid), p.auraRow:GetWidth(), p.auraRow:GetHeight(), tostring(p.auraRow:IsVisible()),
+		#p.auraIcons, tostring(first and first:IsVisible())))
 end
 
 local events = CreateFrame("Frame")

@@ -308,6 +308,25 @@ function YP:StartScanning()
 	end)
 end
 
+function YP:DebugTarget()
+	local target
+	if UnitExists("target") then
+		for _, p in pairs(plates) do
+			if p.frame:IsShown() and p.frame:GetAlpha() > 0.99 then
+				target = p
+			end
+		end
+	end
+	YB:Print(format("%d nameplates styled", (function()
+		local n = 0
+		for _ in pairs(plates) do
+			n = n + 1
+		end
+		return n
+	end)()))
+	ns.DebugTarget(target)
+end
+
 function YP:UpdateAllPlates()
 	for _, p in pairs(plates) do
 		layout(p)

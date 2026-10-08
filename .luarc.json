@@ -207,6 +207,7 @@
 		"CastingBarFrameText",
 		"CastingBarFrameIcon",
 		"UnitGUID",
-		"bit"
+		"bit",
+		"SlashCmdList"
 	]
 }

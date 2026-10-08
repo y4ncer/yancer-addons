@@ -166,7 +166,8 @@ yancer/
 - **Player cast bar** (Square style): the spell icon on its left. Blizzard's flash art no longer shows when a
   cast ends. Channelled spells (Mind Flay, Mind Sear, Penance, Drain Soul/Life/Mana, Health Funnel, Hellfire,
   Rain of Fire, Arcane Missiles, Blizzard, Evocation, Hurricane, Tranquility, Volley, Divine Hymn, Hymn of
-  Hope) get tick marks and a ticks-left counter on the right.
+  Hope) get dark tick marks and a ticks-left counter on the right. Pushback shows in red on the left:
+  `+0.5s` when a cast is delayed, `-0.8s` when a channel is cut short.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.
@@ -256,6 +257,7 @@ Needs yancer-bars (its settings live in `/yb` → Nameplates).
   default. Your **target's** plate also shows the time left (red under 3 seconds). 3.3.5 plates don't say
   which unit they are, so a plate learns it when it is your target or under the mouse (players also by
   name from the combat log). Your own debuffs are then followed through the combat log.
+  `/yplates` prints what it knows about your target's plate (for bug reports).
 - Health text (percent or current), a white border on your target, the border in the threat colour
   instead of Blizzard's glow.
 - 3.3.5 has no nameplate API: plates are found as WorldFrame children with the nameplate border texture.

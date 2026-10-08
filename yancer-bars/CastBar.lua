@@ -2,8 +2,8 @@ local _, ns = ...
 local YB = ns.YB
 
 -- Blizzard's player cast bar (CastingBarFrame): the square style (spell icon on
--- its left, no Blizzard art), and tick marks plus a ticks-left counter on
--- channelled spells.
+-- its left, no Blizzard art), tick marks plus a ticks-left counter on
+-- channelled spells, and the pushback taken ("+0.5s" on casts, "-0.8s" on channels).
 
 local bar = CastingBarFrame
 
@@ -35,10 +35,21 @@ for id, ticks in pairs({
 	end
 end
 
+-- Marks and texts on their own frame above the bar's fill.
+local overlay = CreateFrame("Frame", nil, bar)
+overlay:SetAllPoints(bar)
+overlay:SetFrameLevel(bar:GetFrameLevel() + 3)
+
 local marks = {}
-local counter = bar:CreateFontString(nil, "OVERLAY")
+local counter = overlay:CreateFontString(nil, "OVERLAY")
 counter:SetFont(YB.FONT, 11, "OUTLINE")
 counter:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
+
+local pushback = overlay:CreateFontString(nil, "OVERLAY")
+pushback:SetFont(YB.FONT, 11, "OUTLINE")
+pushback:SetPoint("LEFT", bar, "LEFT", 4, 0)
+pushback:SetTextColor(1, 0.25, 0.25)
+local castEnd, delay = 0, 0
 local ticks = 0
 
 local function hideTicks()
@@ -55,10 +66,11 @@ local function showTicks(count)
 	for i = 1, count - 1 do
 		local mark = marks[i]
 		if not mark then
-			mark = bar:CreateTexture(nil, "OVERLAY")
+			-- Dark and 2px wide, so they show on Blizzard's bright green channel colour.
+			mark = overlay:CreateTexture(nil, "OVERLAY")
 			mark:SetTexture(YB.WHITE)
-			mark:SetVertexColor(1, 1, 1, 0.8)
-			mark:SetWidth(1)
+			mark:SetVertexColor(0, 0, 0, 1)
+			mark:SetWidth(2)
 			marks[i] = mark
 		end
 		mark:ClearAllPoints()
@@ -71,9 +83,35 @@ local function showTicks(count)
 	end
 end
 
+-- Pushback: how far the cast end moved since the cast started. Casts end later
+-- (UNIT_SPELLCAST_DELAYED), channels end sooner (UNIT_SPELLCAST_CHANNEL_UPDATE).
+local function startPushback(endMS)
+	castEnd, delay = endMS or 0, 0
+	pushback:SetText("")
+end
+
+local function updatePushback(endMS, channel)
+	if not endMS or castEnd == 0 then
+		return
+	end
+	delay = math.abs(endMS - castEnd) / 1000
+	if delay >= 0.05 then
+		pushback:SetText(format(channel and "-%.1fs" or "+%.1fs", delay))
+	end
+end
+
 bar:HookScript("OnEvent", function(self, event, unit)
 	if unit ~= self.unit then
 		return
+	end
+	if event == "UNIT_SPELLCAST_START" then
+		startPushback(select(6, UnitCastingInfo(self.unit)))
+	elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
+		startPushback(select(6, UnitChannelInfo(self.unit)))
+	elseif event == "UNIT_SPELLCAST_DELAYED" then
+		updatePushback(select(6, UnitCastingInfo(self.unit)), false)
+	elseif event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
+		updatePushback(select(6, UnitChannelInfo(self.unit)), true)
 	end
 	if event == "UNIT_SPELLCAST_CHANNEL_START" then
 		local count = TICKS[UnitChannelInfo(self.unit) or ""]

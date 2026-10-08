@@ -48,6 +48,10 @@ function YP:OnEnable()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateRoster")
 	self:StartScanning()
 	self:Refresh()
+	-- /yplates: debug info about your target's nameplate.
+	YB:RegisterChatCommand("yplates", function()
+		YP:DebugTarget()
+	end)
 end
 
 function YP:Refresh()

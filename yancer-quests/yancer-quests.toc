@@ -1,0 +1,14 @@
+## Interface: 30300
+## Title: |cff33ccffyancer|r-quests
+## Notes: Movable square quest tracker, quest mob and drop info on tooltips, square quest windows.
+## Author: yancer
+## Version: 0.1.0
+## Dependencies: yancer-bars
+## SavedVariables: yancerQuestsDB
+
+Data\QuestDB.lua
+Core.lua
+Tracker.lua
+QuestInfo.lua
+Skin.lua
+Options.lua

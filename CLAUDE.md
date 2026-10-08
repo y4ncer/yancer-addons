@@ -32,24 +32,18 @@
 
 ## Status / next up (update this at the end of a session)
 
-- yancer-bars v0.8.0 and yancer-chat v0.1.0 were tested in-game by the user.
-- yancer-frames v0.1.0 (custom Player/Target/Focus frames; the user chose custom frames over restyling
-  Blizzard's) is **written but not yet confirmed in-game**. The first load needs a client restart.
-- Waiting on user confirmation: the chat-clamp and micro-menu latency-bar fixes (commit `72ebd07`).
-- **yancer-bags v0.1.0** (one merged square bag window) and the druid **Prowl Page** paging option
-  (`[bonusbar:1,stealth] 8`) are written but not yet confirmed in-game.
-- **yancer-quests v0.1.0** (styled WatchFrame tracker, quest mob/drop info from a pfQuest-wotlk-generated DB,
-  square quest log / quest dialog / gossip) is written but not yet confirmed in-game. The first load needs a client restart.
-  Things to check: the backdrop insets in `Skin.lua` (guessed), whether the item buttons still work in combat, and
-  the tracker background height. Ideas: map/minimap pins from the DB coords, quest givers, auto accept/turn-in.
-- From the user's PvP screenshot (2026-10-09): yancer-frames v0.2.0 **Party + Arena frames** (class icons,
-  trinket cooldowns, range fade), **yancer-plates v0.1.0** and **yancer-minimap v0.1.0** (minimap + FPS/MS/durability
-  text) are written but not yet confirmed in-game. New addons need a client restart. Things to check: whether the
-  `[group:raid]` macro condition works on 3.3.5, whether the nameplate bars stay where we put them (the client may
-  re-anchor them), and whether the minimap redraws at a new size.
-- Bags ideas not done yet: merged bank window, sorting, bag slot bar inside the window, keyring.
-- Known gaps / ideas: the player frame doesn't swap to the vehicle unit; no pet / target-of-target /
-  party frames of our own; the arena frames have no spec icon (3.3.5 has no API for it).
+- Tested in-game by the user: yancer-bars (incl. the Quartz-style player cast bar, channel ticks, pushback),
+  yancer-chat, yancer-quests tracker (background only while collapsed), nameplate debuffs with timers.
+- Written 2026-10-09, **not yet confirmed in-game**: yancer-frames v0.2.0 Party/Arena frames (class icons,
+  trinket cooldowns, range fade; is `[group:raid]` ok on 3.3.5?), aura timer numbers on unit frames and
+  Blizzard buffs, yancer-minimap (round/square, zone text, clock, info text, right-click tracking menu),
+  quest windows skin (backdrop insets in `yancer-quests/Skin.lua` are guesses), yancer-bags, druid Prowl page.
+- The user has XPerl and Gladdy installed: they overlap our Party/Arena frames. They have !BugGrabber
+  without BugSack, so Lua errors are hidden: ask them to `/console scriptErrors 1`.
+- `/yplates` prints nameplate debuff debug info.
+- Ideas: map/minimap pins from the quest DB coords, quest givers, auto accept/turn-in; yancer-frames cast
+  bars in the Quartz style; merged bank window, bag sorting; pet / target-of-target frames; vehicle swap
+  on the player frame. Arena frames can't show the spec (no 3.3.5 API).
 
 ## Finding a lost session
 

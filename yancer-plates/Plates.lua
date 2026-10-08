@@ -302,7 +302,7 @@ function YP:StartScanning()
 				elseif hasMouseover and p.highlight and p.highlight:IsShown() then
 					p.guid = UnitGUID("mouseover")
 				end
-				ns.UpdatePlateAuras(p, isTarget)
+				ns.UpdatePlateAuras(p)
 			end
 		end
 	end)

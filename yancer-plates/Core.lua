@@ -27,7 +27,7 @@ local defaults = {
 		auraWidth = 20,
 		auraHeight = 14,
 		auraFontSize = 9,
-		targetTimers = true, -- time left on your target's plate
+		timers = true, -- time left on every plate's debuffs
 	},
 }
 

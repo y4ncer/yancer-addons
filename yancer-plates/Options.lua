@@ -62,7 +62,7 @@ function YP:SetupOptions()
 					aurasHeader = header("Debuffs", 40),
 					auras = toggle("Show Debuffs", 41, "Debuff icons above the name, with their stack count."),
 					onlyMyDebuffs = toggle("Only My Debuffs", 42, "Only the debuffs you (or your pet) put on the unit."),
-					targetTimers = toggle("Timers on Target", 43, "Time left on the debuffs on your target's nameplate."),
+					timers = toggle("Timers", 43, "Time left on the debuffs, on every nameplate."),
 					maxAuras = range("Max Debuffs", 44, 1, 10, 1, { disabled = off }),
 					auraWidth = range("Icon Width", 45, 10, 40, 1, { disabled = off }),
 					auraHeight = range("Icon Height", 46, 8, 40, 1, { disabled = off }),

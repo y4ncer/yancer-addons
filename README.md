@@ -9,7 +9,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 | `yancer-frames` | v0.2.0 | Custom Player, Target, Focus, Party and Arena frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
 | `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 | `yancer-quests` | v0.1.0 | Movable square quest tracker (auto-collapse, coloured objectives), which mobs to kill and which mobs drop quest items (bundled quest database), square quest windows. Needs yancer-bars. |
-| `yancer-plates` | v0.2.0 | Flat square nameplates: class icons, debuffs with stacks (and timers on your target), health text, cast bars, target and threat borders. Needs yancer-bars. |
+| `yancer-plates` | v0.2.0 | Flat square nameplates: class icons, debuffs with stacks and timers, health text, cast bars, target and threat borders. Needs yancer-bars. |
 | `yancer-minimap` | v0.1.0 | Movable round or square minimap with zone text and clock, plus an FPS / latency / durability text. Needs yancer-bars. |
 
 ## Conventions
@@ -254,7 +254,7 @@ Needs yancer-bars (its settings live in `/yb` → Nameplates).
 - **Class icons** above player nameplates: group members by name, enemies from their class colour
   (needs **Class-Colored Enemies**, Blizzard's setting, which this turns on).
 - **Debuffs** above the name: wide cropped icons with the stack count, soonest to expire first. Only yours by
-  default. Your **target's** plate also shows the time left (red under 3 seconds). 3.3.5 plates don't say
+  default, with the time left on every plate (red under 3 seconds), also after you switch targets. 3.3.5 plates don't say
   which unit they are, so a plate learns it when it is your target or under the mouse (players also by
   name from the combat log). Your own debuffs are then followed through the combat log.
   `/yplates` prints what it knows about your target's plate (for bug reports).

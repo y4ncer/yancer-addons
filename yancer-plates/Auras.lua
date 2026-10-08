@@ -136,7 +136,7 @@ function ns.LayoutPlateAuras(p)
 		f.time:SetFont(YB.NUMBER_FONT, s.auraFontSize, "OUTLINE")
 	end
 	p.classAnchor = nil
-	ns.UpdatePlateAuras(p, false)
+	ns.UpdatePlateAuras(p)
 end
 
 local function sortByExpires(a, b)
@@ -148,7 +148,7 @@ end
 
 local shown = {}
 
-function ns.UpdatePlateAuras(p, isTarget)
+function ns.UpdatePlateAuras(p)
 	local s = db()
 	local guid = p.guid
 	if not guid then
@@ -189,7 +189,7 @@ function ns.UpdatePlateAuras(p, isTarget)
 		f.icon:SetTexture(a.icon)
 		f.icon:SetTexCoord(0.08, 0.92, 0.08 + math.max(zoomY, 0), 0.92 - math.max(zoomY, 0))
 		f.count:SetText(a.count > 1 and a.count or "")
-		if isTarget and s.targetTimers and a.expires > 0 then
+		if s.timers and a.expires > 0 then
 			local left = a.expires - GetTime()
 			f.time:SetText(formatTime(left))
 			if left < 3 then

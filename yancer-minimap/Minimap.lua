@@ -3,7 +3,7 @@ local YM, YB = ns.YM, ns.YB
 
 -- Blizzard's minimap, movable (/yb move) and resizable, round or square, with
 -- the zone name above it (in the PvP colour) and a clock below it. The mouse
--- wheel zooms. The tracking, mail, battleground/LFG and difficulty icons sit on
+-- wheel zooms, right-click opens the tracking menu. The tracking, mail, battleground/LFG and difficulty icons sit on
 -- its corners. The whole MinimapCluster is anchored so the map centres on our
 -- holder, which keeps Blizzard's own anchors inside it working.
 
@@ -194,6 +194,16 @@ function YM:EnableMinimap()
 		end
 	end)
 
+	-- Right-click anywhere on the map: the tracking menu (Repair, Food & Drink, ...)
+	-- at the cursor. Left-click still pings.
+	Minimap:SetScript("OnMouseUp", function(map, button)
+		if button == "RightButton" then
+			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, "cursor")
+		else
+			Minimap_OnClick(map)
+		end
+	end)
+
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", function(map, delta)
 		local zoom = map:GetZoom() + (delta > 0 and 1 or -1)
@@ -222,6 +232,12 @@ function YM:UpdateMinimap()
 	placeIcons()
 	if p.hideButtons then
 		hideButtons()
+	end
+	-- The tracking button isn't needed with the right-click menu.
+	if p.hideTracking then
+		MiniMapTracking:Hide()
+	else
+		MiniMapTracking:Show()
 	end
 	if p.zoneText then
 		zone:Show()

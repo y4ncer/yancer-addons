@@ -217,4 +217,7 @@ read_globals = {
 	"UnitGUID",
 	"bit",
 	"SlashCmdList",
+	"MiniMapTrackingDropDown",
+	"Minimap_OnClick",
+	"MiniMapTracking",
 }

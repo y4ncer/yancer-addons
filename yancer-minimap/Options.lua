@@ -42,7 +42,8 @@ function YM:SetupOptions()
 			minimap = {
 				type = "group", name = "Minimap", order = 1, get = get, set = set,
 				args = {
-					info = note("Move it with /yb move. The mouse wheel zooms, the clock opens the calendar.", 1),
+					info = note("Move it with /yb move. The mouse wheel zooms, right-click opens the tracking "
+						.. "menu, the clock opens the calendar.", 1),
 					minimap = toggle("Style Minimap", 2, "Changing this needs a /reload.", { width = "full" }),
 					shape = { type = "select", name = "Shape", order = 10, disabled = noMap,
 						values = { round = "Round", square = "Square" } },
@@ -53,6 +54,8 @@ function YM:SetupOptions()
 					localTime = toggle("Local Time", 22, "Your computer's time instead of the server's.", mapOff),
 					hideButtons = toggle("Hide Buttons", 23,
 						"Hide the zoom, world map and calendar buttons. Showing them again needs a /reload.", mapOff),
+					hideTracking = toggle("Hide Tracking Button", 24,
+						"Hide the round tracking button. Right-click the map for the tracking menu.", mapOff),
 					resetPosition = { type = "execute", name = "Reset Position", order = 30, disabled = noMap,
 						func = function()
 							YM:SavePosition(nil, nil, nil, nil, nil)

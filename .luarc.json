@@ -208,6 +208,9 @@
 		"CastingBarFrameIcon",
 		"UnitGUID",
 		"bit",
-		"SlashCmdList"
+		"SlashCmdList",
+		"MiniMapTrackingDropDown",
+		"Minimap_OnClick",
+		"MiniMapTracking"
 	]
 }

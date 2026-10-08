@@ -276,6 +276,7 @@ Needs yancer-bars (its settings live in `/yb` → Minimap).
 - **Minimap:** placed with `/yb move`. Round or square (square gets the shared outline), with adjustable size and scale.
   The zone name sits above it in its PvP colour (red hostile/arena, green friendly, orange contested,
   blue sanctuary). A clock sits at the bottom (local or server time, click for the calendar). The mouse wheel zooms.
+  **Right-click the map** for the tracking menu (Repair, Food & Drink, Innkeeper, ...). Its round button is hidden.
   The zoom, world map and calendar buttons are hidden. Tracking, mail, battleground/LFG and dungeon
   difficulty sit on the map's corners. Minimap button addons are told the shape (`GetMinimapShape`).
 - **Info text:** `FPS: 60   MS: 26   Dur: 94%`, coloured green / yellow / red, placed with `/yb move`.

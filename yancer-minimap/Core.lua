@@ -17,6 +17,7 @@ local defaults = {
 		clock = true,
 		localTime = true,    -- local time instead of server time
 		hideButtons = true,  -- zoom buttons, world map button, calendar (mouse wheel zooms instead)
+		hideTracking = true, -- the tracking button (right-click the map instead)
 		point = "TOPRIGHT", relPoint = "TOPRIGHT", x = -30, y = -30,
 		-- Info text: FPS, latency, durability
 		info = true,

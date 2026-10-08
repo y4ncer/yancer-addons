@@ -135,6 +135,15 @@ end
 
 -- Aura buttons are created on demand; debuffs keep their type colour on the border.
 local function skinAura(button, border, r, g, b)
+	if not button.ySkinned then
+		-- The time left, under the icon in our number font.
+		local duration = _G[button:GetName() .. "Duration"]
+		if duration then
+			duration:SetFont(YB.NUMBER_FONT, 11, "OUTLINE")
+			duration:ClearAllPoints()
+			duration:SetPoint("TOP", button, "BOTTOM", 0, -2)
+		end
+	end
 	YB:SkinIconButton(button, _G[button:GetName() .. "Icon"])
 	if border then
 		border:SetAlpha(0)
@@ -223,6 +232,9 @@ function YB:SkinElements()
 		return
 	end
 	self.elementsSkinned = true
+	-- Buff/debuff durations under the icons (Interface > Buffs and Debuffs > Show durations).
+	SetCVar("buffDurations", "1")
+	_G.SHOW_BUFF_DURATIONS = "1"
 
 	skinButtons("ShapeshiftButton", 10)
 	skinButtons("PetActionButton", 10)

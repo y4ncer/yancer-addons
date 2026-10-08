@@ -2,8 +2,39 @@ local _, ns = ...
 local YF, YB = ns.YF, ns.YB
 
 -- Aura icons in rows above the frame: debuffs first (border in the debuff type
--- colour), then buffs. Hover for the tooltip; the cooldown swipe shows the
--- time left (OmniCC adds text if installed).
+-- colour), then buffs. Hover for the tooltip. The time left shows as a swipe and
+-- as a number in the middle (OmniCC is told to skip these), the stack count in
+-- the bottom-right corner.
+
+local function formatTime(left)
+	if left >= 3600 then
+		return format("%dh", math.ceil(left / 3600))
+	elseif left >= 60 then
+		return format("%dm", math.ceil(left / 60))
+	elseif left >= 3 then
+		return format("%d", math.floor(left + 0.5))
+	end
+	return format("%.1f", left)
+end
+
+local function timerUpdate(button, elapsed)
+	button.timerElapsed = (button.timerElapsed or 0) + elapsed
+	if button.timerElapsed < 0.1 then
+		return
+	end
+	button.timerElapsed = 0
+	local left = (button.expires or 0) - GetTime()
+	if left <= 0 then
+		button.time:SetText("")
+		return
+	end
+	button.time:SetText(formatTime(left))
+	if left < 3 then
+		button.time:SetTextColor(1, 0.2, 0.2)
+	else
+		button.time:SetTextColor(1, 1, 1)
+	end
+end
 
 local function createAura(f)
 	local button = CreateFrame("Button", nil, f)
@@ -15,7 +46,14 @@ local function createAura(f)
 	button.cooldown = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
 	button.cooldown:SetAllPoints(button.icon)
 	button.cooldown:SetReverse(true)
-	button.count = button:CreateFontString(nil, "OVERLAY")
+	button.cooldown.noCooldownCount = true -- our own number instead of OmniCC's
+	-- Texts above the swipe.
+	local texts = CreateFrame("Frame", nil, button)
+	texts:SetAllPoints(button)
+	texts:SetFrameLevel(button.cooldown:GetFrameLevel() + 2)
+	button.time = texts:CreateFontString(nil, "OVERLAY")
+	button.time:SetPoint("CENTER", button, "CENTER", 0, 0)
+	button.count = texts:CreateFontString(nil, "OVERLAY")
 	button.count:SetFont(YB.NUMBER_FONT, 10, "OUTLINE")
 	button.count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 1)
 	button:SetScript("OnEnter", function(self)
@@ -57,10 +95,17 @@ function YF:UpdateAuras(f)
 			button.icon:SetTexture(icon)
 			button.count:SetText(count and count > 1 and count or "")
 			button:SetBackdropBorderColor(r, g, b, 1)
+			button.time:SetFont(YB.NUMBER_FONT, math.max(math.floor(size * 0.45), 8), "OUTLINE")
 			if duration and duration > 0 then
 				CooldownFrame_SetTimer(button.cooldown, expires - duration, duration, 1)
+				button.expires = expires
+				button.timerElapsed = 1
+				button:SetScript("OnUpdate", timerUpdate)
 			else
 				button.cooldown:Hide()
+				button.expires = nil
+				button.time:SetText("")
+				button:SetScript("OnUpdate", nil)
 			end
 			button:Show()
 		end

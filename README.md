@@ -159,7 +159,7 @@ yancer/
   pet, possess and totem bars hold secure buttons and are only re-placed out of combat.
   Turning an element off leaves it where it is until `/reload`.
 - **Square style for UI elements** (`/yb` → UI Elements → Style, on by default): stance, pet, possess and
-  totem buttons, bags, the micro menu, buffs/debuffs (debuff type colour on the border) get square cropped icons and flat
+  totem buttons, bags, the micro menu, buffs/debuffs (debuff type colour on the border, time left under each, turned on) get square cropped icons and flat
   highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
   (style, size, colour). The totem slot buttons and keyring keep Blizzard's art. Undoing it needs
   a `/reload`.
@@ -206,6 +206,8 @@ Needs yancer-bars (its settings live in `/yb` → Unit Frames, and it uses the s
   raid mark and party leader icons (player: combat/resting icon); auras above the frame (size, count,
   only my debuffs); a cast bar below it; combo points on the target. **Reset Position** puts it back.
 - Placed with `/yb move`. While unlocked every frame shows, with sample values when the unit doesn't exist.
+- Aura icons show the **time left** as a number in the middle (red under 3 seconds) and the stack count in the
+  corner. OmniCC skips them.
 - The pet frame, death knight runes and shaman totem timers stay, below the Player frame.
 - **Party** (party1-4) and **Arena** (arena1-5) frames: one tab and one mover per group, the members
   stacked with adjustable spacing. Party frames: right-click menu, hide in raids, fade out of range

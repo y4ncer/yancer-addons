@@ -163,7 +163,8 @@ yancer/
   highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
   (style, size, colour). The totem slot buttons and keyring keep Blizzard's art. Undoing it needs
   a `/reload`.
-- **Player cast bar** (Square style): the spell icon on its left. Blizzard's flash art no longer shows when a
+- **Player cast bar** (Square style): the spell icon on its left. Smooth fill computed from the cast's real
+  start/end time every frame, with a soft spark on its edge. Blizzard's flash art no longer shows when a
   cast ends. Channelled spells (Mind Flay, Mind Sear, Penance, Drain Soul/Life/Mana, Health Funnel, Hellfire,
   Rain of Fire, Arcane Missiles, Blizzard, Evocation, Hurricane, Tranquility, Volley, Divine Hymn, Hymn of
   Hope) get dark tick marks and a ticks-left counter on the right. Pushback shows in red on the left:

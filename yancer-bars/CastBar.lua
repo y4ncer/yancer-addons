@@ -4,6 +4,8 @@ local YB = ns.YB
 -- Blizzard's player cast bar (CastingBarFrame): the square style (spell icon on
 -- its left, no Blizzard art), tick marks plus a ticks-left counter on
 -- channelled spells, and the pushback taken ("+0.5s" on casts, "-0.8s" on channels).
+-- The fill is computed from the cast's start/end time every frame (Blizzard adds
+-- up frame times, which drifts and stutters), with a soft spark on its edge.
 
 local bar = CastingBarFrame
 
@@ -51,6 +53,8 @@ pushback:SetPoint("LEFT", bar, "LEFT", 4, 0)
 pushback:SetTextColor(1, 0.25, 0.25)
 local castEnd, delay = 0, 0
 local ticks = 0
+local startTime, endTime -- current cast/channel, in GetTime() seconds
+local spark -- created by the square style
 
 local function hideTicks()
 	ticks = 0
@@ -111,6 +115,13 @@ bar:HookScript("OnEvent", function(self, event, unit)
 	if unit ~= self.unit then
 		return
 	end
+	if event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_DELAYED" then
+		local _, _, _, _, s, e = UnitCastingInfo(self.unit)
+		startTime, endTime = s and s / 1000, e and e / 1000
+	elseif event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
+		local _, _, _, _, s, e = UnitChannelInfo(self.unit)
+		startTime, endTime = s and s / 1000, e and e / 1000
+	end
 	if event == "UNIT_SPELLCAST_START" then
 		startPushback(select(6, UnitCastingInfo(self.unit)))
 	elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
@@ -132,8 +143,28 @@ bar:HookScript("OnEvent", function(self, event, unit)
 	end
 end)
 
--- Ticks left: the channel bar runs down from full, one tick per 1/ticks of it.
+-- Runs after Blizzard's OnUpdate: replaces its value with the exact one for now.
 bar:HookScript("OnUpdate", function(self)
+	local active = (self.casting or self.channeling) and endTime and self.maxValue and self.maxValue > 0
+	if active then
+		local now = GetTime()
+		local value
+		if self.casting then
+			value = math.min(math.max(now - startTime, 0), self.maxValue)
+		else
+			value = math.max(endTime - now, 0)
+		end
+		self.value = value
+		self:SetValue(value)
+		if spark then
+			spark:SetPoint("CENTER", self, "LEFT", self:GetWidth() * value / self.maxValue, 0)
+			spark:Show()
+		end
+	elseif spark then
+		spark:Hide()
+	end
+
+	-- Ticks left: the channel bar runs down from full, one tick per 1/ticks of it.
 	if ticks > 0 and self.channeling and self.maxValue and self.maxValue > 0 then
 		counter:SetText(math.ceil(self.value / self.maxValue * ticks - 0.001))
 	elseif ticks > 0 then
@@ -154,6 +185,15 @@ function YB:SkinCastBar()
 	end
 	CastingBarFrameText:ClearAllPoints()
 	CastingBarFrameText:SetPoint("CENTER", bar, "CENTER", 0, 0)
+
+	-- Soft glow on the fill's leading edge (Blizzard's spark art, our own texture
+	-- because Blizzard re-anchors its spark every frame).
+	spark = overlay:CreateTexture(nil, "OVERLAY")
+	spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+	spark:SetBlendMode("ADD")
+	spark:SetWidth(14)
+	spark:SetHeight(bar:GetHeight() * 2.4)
+	spark:Hide()
 
 	-- Blizzard sets the icon's texture on every cast but hides it for the player
 	-- once, on load: shown again, square, left of the bar.
@@ -177,5 +217,6 @@ function YB:SkinCastBar()
 		local h = b:GetHeight() + 2
 		icon:SetWidth(h)
 		icon:SetHeight(h)
+		spark:SetHeight(b:GetHeight() * 2.4)
 	end)
 end

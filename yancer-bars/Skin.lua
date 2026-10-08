@@ -262,9 +262,7 @@ function YB:SkinElements()
 
 	skinMicroMenu()
 
-	self:SkinStatusBar(_G.CastingBarFrame, { "CastingBarFrameBorder", "CastingBarFrameFlash", "CastingBarFrameBorderShield" })
-	_G.CastingBarFrameText:ClearAllPoints()
-	_G.CastingBarFrameText:SetPoint("CENTER", _G.CastingBarFrame, "CENTER", 0, 0)
+	self:SkinCastBar() -- CastBar.lua
 end
 
 hooksecurefunc("AuraButton_Update", function(buttonName, index)

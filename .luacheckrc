@@ -211,4 +211,9 @@ read_globals = {
 	"ToggleCalendar",
 	"MinimapZoneTextButton",
 	"TimeManagerClockButton",
+	"CastingBarFrame",
+	"CastingBarFrameText",
+	"CastingBarFrameIcon",
+	"UnitGUID",
+	"bit",
 }

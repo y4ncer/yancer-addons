@@ -4,12 +4,12 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 
 | Addon | Status | What it does |
 |---|---|---|
-| `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
+| `yancer-bars` | v0.9.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 | `yancer-chat` | v0.1.0 | Square, movable chat: class colours, short channels, timestamps, clickable URLs, copy chat, better scrolling. Needs yancer-bars. |
 | `yancer-frames` | v0.2.0 | Custom Player, Target, Focus, Party and Arena frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
 | `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 | `yancer-quests` | v0.1.0 | Movable square quest tracker (auto-collapse, coloured objectives), which mobs to kill and which mobs drop quest items (bundled quest database), square quest windows. Needs yancer-bars. |
-| `yancer-plates` | v0.1.0 | Flat square nameplates: class icons, health text, cast bars, target and threat borders. Needs yancer-bars. |
+| `yancer-plates` | v0.2.0 | Flat square nameplates: class icons, debuffs with stacks (and timers on your target), health text, cast bars, target and threat borders. Needs yancer-bars. |
 | `yancer-minimap` | v0.1.0 | Movable round or square minimap with zone text and clock, plus an FPS / latency / durability text. Needs yancer-bars. |
 
 ## Conventions
@@ -163,6 +163,10 @@ yancer/
   highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
   (style, size, colour). The totem slot buttons and keyring keep Blizzard's art. Undoing it needs
   a `/reload`.
+- **Player cast bar** (Square style): the spell icon on its left. Blizzard's flash art no longer shows when a
+  cast ends. Channelled spells (Mind Flay, Mind Sear, Penance, Drain Soul/Life/Mana, Health Funnel, Hellfire,
+  Rain of Fire, Arcane Missiles, Blizzard, Evocation, Hurricane, Tranquility, Volley, Divine Hymn, Hymn of
+  Hope) get tick marks and a ticks-left counter on the right.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.
@@ -248,6 +252,10 @@ Needs yancer-bars (its settings live in `/yb` → Nameplates).
   Casts that can't be interrupted are grey.
 - **Class icons** above player nameplates: group members by name, enemies from their class colour
   (needs **Class-Colored Enemies**, Blizzard's setting, which this turns on).
+- **Debuffs** above the name: wide cropped icons with the stack count, soonest to expire first. Only yours by
+  default. Your **target's** plate also shows the time left (red under 3 seconds). 3.3.5 plates don't say
+  which unit they are, so a plate learns it when it is your target or under the mouse (players also by
+  name from the combat log). Your own debuffs are then followed through the combat log.
 - Health text (percent or current), a white border on your target, the border in the threat colour
   instead of Blizzard's glow.
 - 3.3.5 has no nameplate API: plates are found as WorldFrame children with the nameplate border texture.

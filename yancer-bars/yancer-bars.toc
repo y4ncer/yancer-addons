@@ -2,7 +2,7 @@
 ## Title: |cff33ccffyancer|r-bars
 ## Notes: Movable, customizable action bars with soft shadows.
 ## Author: yancer
-## Version: 0.8.0
+## Version: 0.9.0
 ## SavedVariables: yancerBarsDB
 
 embeds.xml
@@ -14,6 +14,7 @@ Blizzard.lua
 Fade.lua
 Elements.lua
 Skin.lua
+CastBar.lua
 Buttons.lua
 Bars.lua
 Options.lua

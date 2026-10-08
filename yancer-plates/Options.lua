@@ -59,6 +59,17 @@ function YP:SetupOptions()
 					targetBorder = toggle("Target Border", 32, "A white border on your target's nameplate."),
 					threatBorder = toggle("Threat Border", 33,
 						"The border turns yellow/orange/red with threat, instead of Blizzard's glow."),
+					aurasHeader = header("Debuffs", 40),
+					auras = toggle("Show Debuffs", 41, "Debuff icons above the name, with their stack count."),
+					onlyMyDebuffs = toggle("Only My Debuffs", 42, "Only the debuffs you (or your pet) put on the unit."),
+					targetTimers = toggle("Timers on Target", 43, "Time left on the debuffs on your target's nameplate."),
+					maxAuras = range("Max Debuffs", 44, 1, 10, 1, { disabled = off }),
+					auraWidth = range("Icon Width", 45, 10, 40, 1, { disabled = off }),
+					auraHeight = range("Icon Height", 46, 8, 40, 1, { disabled = off }),
+					auraFontSize = range("Icon Font Size", 47, 6, 16, 1, { disabled = off }),
+					auraNote = { type = "description", order = 48, name = "\n3.3.5 nameplates don't say which unit "
+						.. "they belong to: a plate shows debuffs once it has been your target or under your mouse "
+						.. "(players right away, by name, once you debuffed them).", disabled = off },
 				},
 			},
 			profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db),

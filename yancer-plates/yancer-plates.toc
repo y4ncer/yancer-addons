@@ -2,10 +2,11 @@
 ## Title: |cff33ccffyancer|r-plates
 ## Notes: Flat square nameplates with class icons, health text, cast bars and target and threat borders.
 ## Author: yancer
-## Version: 0.1.0
+## Version: 0.2.0
 ## Dependencies: yancer-bars
 ## SavedVariables: yancerPlatesDB
 
 Core.lua
 Plates.lua
+Auras.lua
 Options.lua

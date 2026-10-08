@@ -20,6 +20,14 @@ local defaults = {
 		showLevel = true,
 		targetBorder = true, -- white border on your target's nameplate
 		threatBorder = true, -- border in the threat colour (Blizzard's glow, hidden)
+		-- Debuffs above the name
+		auras = true,
+		onlyMyDebuffs = true,
+		maxAuras = 5,
+		auraWidth = 20,
+		auraHeight = 14,
+		auraFontSize = 9,
+		targetTimers = true, -- time left on your target's plate
 	},
 }
 

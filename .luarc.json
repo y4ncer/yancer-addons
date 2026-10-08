@@ -202,6 +202,11 @@
 		"GetGameTime",
 		"ToggleCalendar",
 		"MinimapZoneTextButton",
-		"TimeManagerClockButton"
+		"TimeManagerClockButton",
+		"CastingBarFrame",
+		"CastingBarFrameText",
+		"CastingBarFrameIcon",
+		"UnitGUID",
+		"bit"
 	]
 }

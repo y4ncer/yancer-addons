@@ -148,7 +148,7 @@ local function layout(p)
 	end
 	if p.raid then
 		p.raid:ClearAllPoints()
-		p.raid:SetPoint("BOTTOM", p.name, "TOP", 0, 2)
+		p.raid:SetPoint("LEFT", hb, "RIGHT", 18, 0) -- past the level
 		p.raid:SetWidth(18)
 		p.raid:SetHeight(18)
 	end
@@ -159,12 +159,9 @@ local function layout(p)
 
 	p.classFrame:SetWidth(s.classIconSize)
 	p.classFrame:SetHeight(s.classIconSize)
-	p.classFrame:ClearAllPoints()
-	if p.raid and p.raid:IsShown() then
-		p.classFrame:SetPoint("BOTTOM", p.raid, "TOP", 0, 2)
-	else
-		p.classFrame:SetPoint("BOTTOM", p.name, "TOP", 0, 2)
-	end
+	-- Above the debuff row when it shows (Auras.lua), else above the name.
+	p.classAnchor = nil
+	ns.LayoutPlateAuras(p)
 
 	placeCastBar(p)
 	updateHealthText(p)
@@ -231,8 +228,14 @@ local function skin(frame)
 	p.classIcon:SetTexture(CLASS_ICONS)
 	p.classFrame:Hide()
 
+	ns.CreatePlateAuras(p)
+
 	frame:HookScript("OnShow", function()
 		layout(p)
+	end)
+	-- Plates are reused for other units: forget which unit this was.
+	frame:HookScript("OnHide", function()
+		p.guid = nil
 	end)
 	hb:HookScript("OnValueChanged", function()
 		updateHealthText(p)
@@ -287,10 +290,19 @@ function YP:StartScanning()
 		end
 		elapsedTotal = 0
 		local hasTarget = UnitExists("target")
+		local hasMouseover = UnitExists("mouseover")
 		for _, p in pairs(plates) do
 			if p.frame:IsShown() then
 				updateBorder(p, hasTarget)
 				updateClassIcon(p)
+				-- Which unit is this? Only the target's and the mouseover's plates can tell.
+				local isTarget = hasTarget and p.frame:GetAlpha() > 0.99
+				if isTarget then
+					p.guid = UnitGUID("target")
+				elseif hasMouseover and p.highlight and p.highlight:IsShown() then
+					p.guid = UnitGUID("mouseover")
+				end
+				ns.UpdatePlateAuras(p, isTarget)
 			end
 		end
 	end)

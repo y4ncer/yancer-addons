@@ -42,9 +42,14 @@
   square quest log / quest dialog / gossip) is written but not yet confirmed in-game. The first load needs a client restart.
   Things to check: the backdrop insets in `Skin.lua` (guessed), whether the item buttons still work in combat, and
   the tracker background height. Ideas: map/minimap pins from the DB coords, quest givers, auto accept/turn-in.
+- From the user's PvP screenshot (2026-10-09): yancer-frames v0.2.0 **Party + Arena frames** (class icons,
+  trinket cooldowns, range fade), **yancer-plates v0.1.0** and **yancer-minimap v0.1.0** (minimap + FPS/MS/durability
+  text) are written but not yet confirmed in-game. New addons need a client restart. Things to check: whether the
+  `[group:raid]` macro condition works on 3.3.5, whether the nameplate bars stay where we put them (the client may
+  re-anchor them), and whether the minimap redraws at a new size.
 - Bags ideas not done yet: merged bank window, sorting, bag slot bar inside the window, keyring.
 - Known gaps / ideas: the player frame doesn't swap to the vehicle unit; no pet / target-of-target /
-  party frames of our own; `yancer-plates` (nameplates) was mentioned early on and postponed.
+  party frames of our own; the arena frames have no spec icon (3.3.5 has no API for it).
 
 ## Finding a lost session
 

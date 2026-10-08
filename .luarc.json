@@ -185,6 +185,23 @@
 		"CLASS_ICON_TCOORDS",
 		"GetNumPartyMembers",
 		"GetNumRaidMembers",
-		"WorldFrame"
+		"WorldFrame",
+		"GetInventoryItemDurability",
+		"GetFramerate",
+		"GetNetStats",
+		"UpdateAddOnMemoryUsage",
+		"GetNumAddOns",
+		"IsAddOnLoaded",
+		"GetAddOnMemoryUsage",
+		"GetAddOnInfo",
+		"MinimapCluster",
+		"Minimap",
+		"GetMinimapZoneText",
+		"GetZonePVPInfo",
+		"date",
+		"GetGameTime",
+		"ToggleCalendar",
+		"MinimapZoneTextButton",
+		"TimeManagerClockButton"
 	]
 }

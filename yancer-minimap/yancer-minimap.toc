@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: |cff33ccffyancer|r-minimap
+## Notes: Movable round or square minimap with zone text and clock, and an FPS / latency / durability text.
+## Author: yancer
+## Version: 0.1.0
+## Dependencies: yancer-bars
+## SavedVariables: yancerMinimapDB
+
+Core.lua
+Minimap.lua
+InfoText.lua
+Options.lua

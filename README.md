@@ -10,6 +10,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 | `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 | `yancer-quests` | v0.1.0 | Movable square quest tracker (auto-collapse, coloured objectives), which mobs to kill and which mobs drop quest items (bundled quest database), square quest windows. Needs yancer-bars. |
 | `yancer-plates` | v0.1.0 | Flat square nameplates: class icons, health text, cast bars, target and threat borders. Needs yancer-bars. |
+| `yancer-minimap` | v0.1.0 | Movable round or square minimap with zone text and clock, plus an FPS / latency / durability text. Needs yancer-bars. |
 
 ## Conventions
 
@@ -72,6 +73,7 @@ yancer/
 ├─ yancer-chat/          module addon: Core, Style, Messages, Copy, Options (no Libs/)
 ├─ yancer-frames/        module addon: Core, Frames, Auras, CastBar, Options (no Libs/)
 ├─ yancer-bags/          module addon: Core, Bags, Hooks, Options (no Libs/)
+├─ yancer-minimap/       module addon: Core, Minimap, InfoText, Options
 ├─ yancer-plates/        module addon: Core, Plates, Options
 ├─ yancer-quests/        module addon: Data/QuestDB (generated), Core, Tracker, QuestInfo, Skin, Options
 ├─ tools/
@@ -250,6 +252,19 @@ Needs yancer-bars (its settings live in `/yb` → Nameplates).
   instead of Blizzard's glow.
 - 3.3.5 has no nameplate API: plates are found as WorldFrame children with the nameplate border texture.
   Turning it off needs a `/reload`.
+
+## yancer-minimap
+
+Needs yancer-bars (its settings live in `/yb` → Minimap).
+
+- **Minimap:** placed with `/yb move`. Round or square (square gets the shared outline), with adjustable size and scale.
+  The zone name sits above it in its PvP colour (red hostile/arena, green friendly, orange contested,
+  blue sanctuary). A clock sits at the bottom (local or server time, click for the calendar). The mouse wheel zooms.
+  The zoom, world map and calendar buttons are hidden. Tracking, mail, battleground/LFG and dungeon
+  difficulty sit on the map's corners. Minimap button addons are told the shape (`GetMinimapShape`).
+- **Info text:** `FPS: 60   MS: 26   Dur: 94%`, coloured green / yellow / red, placed with `/yb move`.
+  Hover for the top addons by memory, bandwidth and latency. Click to free unused memory.
+- Turning off the minimap style, the info text or Hide Buttons needs a `/reload`.
 
 ## Module API (yancer-bars)
 

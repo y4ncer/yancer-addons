@@ -101,6 +101,13 @@ local function updatePushback(endMS, channel)
 end
 
 bar:HookScript("OnEvent", function(self, event, unit)
+	-- Blizzard labels channels "Channeling": show the spell's name instead.
+	if self.channeling then
+		local name = UnitChannelInfo(self.unit)
+		if name then
+			CastingBarFrameText:SetText(name)
+		end
+	end
 	if unit ~= self.unit then
 		return
 	end

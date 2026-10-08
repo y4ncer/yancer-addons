@@ -9,6 +9,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 | `yancer-frames` | v0.2.0 | Custom Player, Target, Focus, Party and Arena frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
 | `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 | `yancer-quests` | v0.1.0 | Movable square quest tracker (auto-collapse, coloured objectives), which mobs to kill and which mobs drop quest items (bundled quest database), square quest windows. Needs yancer-bars. |
+| `yancer-plates` | v0.1.0 | Flat square nameplates: class icons, health text, cast bars, target and threat borders. Needs yancer-bars. |
 
 ## Conventions
 
@@ -71,6 +72,7 @@ yancer/
 ├─ yancer-chat/          module addon: Core, Style, Messages, Copy, Options (no Libs/)
 ├─ yancer-frames/        module addon: Core, Frames, Auras, CastBar, Options (no Libs/)
 ├─ yancer-bags/          module addon: Core, Bags, Hooks, Options (no Libs/)
+├─ yancer-plates/        module addon: Core, Plates, Options
 ├─ yancer-quests/        module addon: Data/QuestDB (generated), Core, Tracker, QuestInfo, Skin, Options
 ├─ tools/
 │  ├─ link.ps1           junction every yancer-* folder into WoW's AddOns
@@ -234,6 +236,20 @@ Needs yancer-bars (its settings live in `/yb` → Quests, and it uses the same m
   Mobs and objects are matched by name, so it also works where a server's NPC ids differ.
 - **Windows:** square quest log, NPC quest dialog and gossip window with light text.
 - Turning off the tracker style or the window style needs a `/reload`.
+
+## yancer-plates
+
+Needs yancer-bars (its settings live in `/yb` → Nameplates).
+
+- Restyles Blizzard's nameplates (V / Shift+V): flat health and cast bars with a square border and the
+  shared outline. The name is above the bar, the level right of it, and the spell icon left of the cast bar.
+  Casts that can't be interrupted are grey.
+- **Class icons** above player nameplates: group members by name, enemies from their class colour
+  (needs **Class-Colored Enemies**, Blizzard's setting, which this turns on).
+- Health text (percent or current), a white border on your target, the border in the threat colour
+  instead of Blizzard's glow.
+- 3.3.5 has no nameplate API: plates are found as WorldFrame children with the nameplate border texture.
+  Turning it off needs a `/reload`.
 
 ## Module API (yancer-bars)
 

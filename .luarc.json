@@ -182,6 +182,9 @@
 		"WatchFrame_Expand",
 		"GetSpellInfo",
 		"UnitInRange",
-		"CLASS_ICON_TCOORDS"
+		"CLASS_ICON_TCOORDS",
+		"GetNumPartyMembers",
+		"GetNumRaidMembers",
+		"WorldFrame"
 	]
 }

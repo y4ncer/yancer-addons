@@ -191,4 +191,7 @@ read_globals = {
 	"GetSpellInfo",
 	"UnitInRange",
 	"CLASS_ICON_TCOORDS",
+	"GetNumPartyMembers",
+	"GetNumRaidMembers",
+	"WorldFrame",
 }

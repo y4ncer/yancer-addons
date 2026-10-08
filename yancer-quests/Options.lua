@@ -52,7 +52,8 @@ function YQ:SetupOptions()
 					height = range("Height", 12, 100, 1000, 1, off),
 					scale = range("Scale", 13, 0.5, 2, 0.05, { isPercent = true, disabled = noTracker }),
 					fontSize = range("Font Size", 14, 8, 20, 1, off),
-					bgAlpha = range("Background Opacity", 15, 0, 1, 0.05, { isPercent = true, disabled = noTracker }),
+					bgAlpha = range("Background Opacity", 15, 0, 1, 0.05, { isPercent = true, disabled = noTracker,
+						desc = "Background behind the header while the tracker is collapsed." }),
 					lookHeader = header("Colours", 20),
 					levelTags = toggle("Level Tags", 21,
 						"Quest titles in their difficulty colour with the level: [12], [12+] elite/group, "

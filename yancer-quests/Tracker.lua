@@ -135,15 +135,12 @@ local function updateBackground()
 		return
 	end
 	local p = db()
-	if p.bgAlpha <= 0 or not WatchFrameHeader:IsShown() then
+	-- Only behind the collapsed header: while the quests are open there is no box.
+	if p.bgAlpha <= 0 or not WatchFrameHeader:IsShown() or not WatchFrame.collapsed then
 		bg:Hide()
 		return
 	end
-	local height = 26
-	if not WatchFrame.collapsed and WatchFrame.nextOffset and WatchFrame.nextOffset < 0 then
-		height = 30 - WatchFrame.nextOffset + 4
-	end
-	bg:SetHeight(math.min(height, WatchFrame:GetHeight()))
+	bg:SetHeight(26)
 	bg:SetBackdropColor(0, 0, 0, p.bgAlpha)
 	bg:Show()
 end

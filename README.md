@@ -216,7 +216,7 @@ Needs yancer-bars (its settings live in `/yb` → Quests, and it uses the same m
 
 - **Tracker:** Blizzard's objective tracker, restyled rather than replaced (quest item buttons, clicks
   and the right-click menu keep working). Placed with `/yb move`. Width, height, scale, font size and
-  background opacity are adjustable. The background fits the shown lines, and the collapse button is a flat +/-.
+  background opacity are adjustable. The background only shows behind the collapsed header, and the collapse button is a flat +/-.
   Quest titles are in their difficulty colour with a level tag (`[12]`, `[12+]` elite/group, `[12D]`
   dungeon, `[12R]` raid, `[12H]` heroic, `Y` daily). Objectives go red → yellow → green with progress.
   **Collapse automatically** in combat, dungeons, raids and battlegrounds/arenas (your own click wins).

@@ -2,7 +2,7 @@ local _, ns = ...
 local YF, YB = ns.YF, ns.YB
 
 -- The "Unit Frames" section of the /yb window: shared settings, then one tab per
--- unit (Player, Target, Focus).
+-- unit (Player, Target, Focus) and group (Party, Arena).
 
 local HEALTH_TEXT = {
 	current = "Current (12.5k)",
@@ -12,7 +12,7 @@ local HEALTH_TEXT = {
 	none = "None",
 }
 local POWER_TEXT = { current = "Current", percent = "Percent", none = "None" }
-local PORTRAIT = { ["3d"] = "3D Model", ["2d"] = "2D Picture", none = "None" }
+local PORTRAIT = { ["3d"] = "3D Model", ["2d"] = "2D Picture", class = "Class Icon", none = "None" }
 local SIDE = { left = "Left", right = "Right" }
 
 local function range(name, order, min, max, step, extra)
@@ -110,6 +110,21 @@ local function unitOptions(unit, order)
 		args.showAuras.desc = "Off by default: Blizzard's buff frame already shows your auras."
 		args.showCastBar.desc = "Off by default: Blizzard's cast bar can be moved under UI Elements."
 	end
+	if unit == "party" or unit == "arena" then
+		args.spacing = range("Spacing", 16, 0, 60, 1, { desc = "Gap between the frames (leave room for cast bars)." })
+	end
+	if unit == "party" then
+		args.enabled.desc = "Replaces Blizzard's party frames. Getting Blizzard's back needs a /reload."
+		args.hideInRaid = toggle("Hide in Raid", 17, "Hide the party frames while in a raid group.")
+		args.rangeFade = toggle("Fade Out of Range", 18, "Members further than about 40 yards fade.")
+	end
+	if unit == "arena" then
+		args.enabled.desc = "Frames for arena enemies (arena1-5). Left-click targets, right-click focuses. "
+			.. "Turn this off if you use Gladdy. Getting Blizzard's back needs a /reload."
+		args.showLeader = nil
+		args.showTrinket = toggle("PvP Trinket", 47,
+			"The enemy's PvP trinket (or Every Man for Himself) with its 2 minute cooldown, next to the frame.")
+	end
 	if unit == "target" then
 		args.showComboPoints = toggle("Combo Points", 47, "Rogue and druid combo points above the frame.")
 	end
@@ -156,6 +171,9 @@ function YF:SetupOptions()
 	}
 	for i, unit in ipairs(self.UNITS) do
 		group.args[unit] = unitOptions(unit, i + 1)
+	end
+	for i, unit in ipairs(self.GROUPS) do
+		group.args[unit] = unitOptions(unit, #self.UNITS + i + 1)
 	end
 	group.args.profiles.order = 100
 	YB:RegisterModuleOptions("frames", group)

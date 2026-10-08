@@ -179,6 +179,9 @@
 		"WatchFrameCollapseExpandButton",
 		"IsInInstance",
 		"WatchFrame_Collapse",
-		"WatchFrame_Expand"
+		"WatchFrame_Expand",
+		"GetSpellInfo",
+		"UnitInRange",
+		"CLASS_ICON_TCOORDS"
 	]
 }

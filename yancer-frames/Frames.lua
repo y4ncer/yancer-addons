@@ -13,6 +13,37 @@ local DROPDOWNS = {
 }
 
 local PVP_TEXCOORD = { 0, 0.6, 0, 0.6 } -- the emblem sits in the top-left of the 64x64 art
+local CLASS_ICONS = "Interface\\WorldStateFrame\\Icons-Classes"
+
+-- PvP trinket and Every Man for Himself: 2 minute cooldown, tracked on arena enemies.
+-- 3.3.5's UNIT_SPELLCAST_SUCCEEDED gives the spell name, not its id.
+local TRINKET_COOLDOWN = 120
+local TRINKET_SPELLS = {}
+for _, id in ipairs({ 42292, 59752 }) do
+	local name = GetSpellInfo(id)
+	if name then
+		TRINKET_SPELLS[name] = true
+	end
+end
+
+local function groupOf(unit)
+	return unit:match("^(%a+)%d$")
+end
+
+-- Party members out of range fade (UnitInRange: about 40 yards). SetAlpha is
+-- allowed on secure frames in combat.
+local function rangeUpdate(f, elapsed)
+	f.rangeElapsed = (f.rangeElapsed or 0) + elapsed
+	if f.rangeElapsed < 0.2 then
+		return
+	end
+	f.rangeElapsed = 0
+	if YF:GetUnitDB(f.unit).rangeFade and UnitExists(f.unit) and not UnitInRange(f.unit) then
+		f:SetAlpha(0.45)
+	else
+		f:SetAlpha(1)
+	end
+end
 
 local function shortValue(v)
 	if v >= 1e6 then
@@ -40,13 +71,37 @@ local function createText(parent, justify)
 end
 
 local function createFrame(unit)
-	local f = CreateFrame("Button", "yancerFrames" .. YF.UNIT_NAMES[unit], UIParent, "SecureUnitButtonTemplate")
+	local f = CreateFrame("Button", "yancerFrames" .. YF.FRAME_NAMES[unit], UIParent, "SecureUnitButtonTemplate")
+	local group = groupOf(unit)
 	f.unit = unit
+	f.group = group
 	f:SetAttribute("unit", unit)
 	f:SetAttribute("*type1", "target")
-	f:SetAttribute("*type2", "menu")
+	if group == "arena" then
+		f:SetAttribute("*type2", "focus") -- arena enemies have no unit menu: right-click focuses
+	else
+		f:SetAttribute("*type2", "menu")
+	end
+	local dropdown = DROPDOWNS[unit] or ("PartyMemberFrame" .. (unit:match("^party(%d)$") or "") .. "DropDown")
 	f.menu = function()
-		ToggleDropDownMenu(1, nil, _G[DROPDOWNS[unit]], "cursor")
+		if _G[dropdown] then
+			ToggleDropDownMenu(1, nil, _G[dropdown], "cursor")
+		end
+	end
+	-- Shown while the unit exists. Party frames can also hide in raids.
+	function f:Watch()
+		if group == "party" and YF:GetUnitDB(unit).hideInRaid then
+			RegisterStateDriver(self, "visibility", "[group:raid] hide; [target=" .. unit .. ",exists] show; hide")
+		else
+			RegisterUnitWatch(self)
+		end
+	end
+	function f:Unwatch()
+		UnregisterUnitWatch(self)
+		UnregisterStateDriver(self, "visibility")
+	end
+	if group == "party" then
+		f:SetScript("OnUpdate", rangeUpdate)
 	end
 	f:RegisterForClicks("AnyUp")
 	f:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -85,6 +140,19 @@ local function createFrame(unit)
 	f.statusIcon = overlay:CreateTexture(nil, "OVERLAY")
 	f.statusIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
 
+	if group == "arena" then
+		local trinket = CreateFrame("Frame", nil, f)
+		YB:SquareBackdrop(trinket, 0.6)
+		YB:Outline(trinket)
+		trinket.icon = trinket:CreateTexture(nil, "ARTWORK")
+		trinket.icon:SetPoint("TOPLEFT", 1, -1)
+		trinket.icon:SetPoint("BOTTOMRIGHT", -1, 1)
+		trinket.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+		trinket.cooldown = CreateFrame("Cooldown", nil, trinket, "CooldownFrameTemplate")
+		trinket.cooldown:SetAllPoints(trinket.icon)
+		f.trinket = trinket
+	end
+
 	if unit == "target" then
 		f.combo = {}
 		for i = 1, 5 do
@@ -102,14 +170,17 @@ local function createFrame(unit)
 
 	YF:CreateCastBar(f)
 
-	YB:CreateMover(f, YF.UNIT_NAMES[unit], function(point, relPoint, x, y)
-		local db = YF:GetUnitDB(unit)
-		db.point, db.relPoint, db.x, db.y = point, relPoint, x, y
-		YF:LayoutFrame(unit)
-		YB:NotifyOptionsChanged()
-	end, function()
-		YB:OpenOptions("frames", unit)
-	end)
+	-- Group members are moved by their group's holder.
+	if not group then
+		YB:CreateMover(f, YF.UNIT_NAMES[unit], function(point, relPoint, x, y)
+			local db = YF:GetUnitDB(unit)
+			db.point, db.relPoint, db.x, db.y = point, relPoint, x, y
+			YF:LayoutFrame(unit)
+			YB:NotifyOptionsChanged()
+		end, function()
+			YB:OpenOptions("frames", unit)
+		end)
+	end
 
 	YF.frames[unit] = f
 	return f
@@ -129,7 +200,13 @@ function YF:LayoutFrame(unit)
 	f:SetWidth(db.width)
 	f:SetHeight(barsHeight + 2)
 	f:ClearAllPoints()
-	f:SetPoint(db.point, UIParent, db.relPoint, db.x, db.y)
+	if f.group then
+		local index = tonumber(unit:match("(%d)$"))
+		f:SetPoint("TOPLEFT", self.holders[f.group], "TOPLEFT", 0, -(index - 1) * (barsHeight + 2 + db.spacing))
+	else
+		local d = self.db.defaults.profile.units[unit]
+		f:SetPoint(db.point or d.point, UIParent, db.relPoint or d.relPoint, db.x or d.x, db.y or d.y)
+	end
 	YB:SquareBackdrop(f, profile.bgAlpha)
 
 	-- Bars fill the space next to the portrait (1px gaps show the dark background).
@@ -222,8 +299,60 @@ function YF:LayoutFrame(unit)
 	f.auraAnchor:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, auraOffset)
 	f.auraAnchor:SetPoint("BOTTOMRIGHT", f, "TOPRIGHT", 0, auraOffset)
 
+	-- Arena trinket: a square on the side away from the portrait, outside the frame.
+	if f.trinket then
+		local t = f.trinket
+		t:SetWidth(barsHeight + 2)
+		t:SetHeight(barsHeight + 2)
+		t:ClearAllPoints()
+		if portraitLeft then
+			t:SetPoint("TOPLEFT", f, "TOPRIGHT", 3, 0)
+		else
+			t:SetPoint("TOPRIGHT", f, "TOPLEFT", -3, 0)
+		end
+	end
+
 	self:LayoutCastBar(f, db)
-	f.yMover:SetFrameLevel(f:GetFrameLevel() + 20)
+	if f.yMover then
+		f.yMover:SetFrameLevel(f:GetFrameLevel() + 20)
+	end
+end
+
+-- A group's holder carries the mover and covers all its members.
+function YF:LayoutGroup(group)
+	local db = self:GetUnitDB(group)
+	local units = self.GROUP_UNITS[group]
+	local holder = self.holders[group]
+	if not holder then
+		holder = CreateFrame("Frame", "yancerFrames" .. self.UNIT_NAMES[group], UIParent)
+		holder:SetFrameStrata("LOW")
+		YB:CreateMover(holder, self.UNIT_NAMES[group], function(point, relPoint, x, y)
+			local d = YF:GetUnitDB(group)
+			d.point, d.relPoint, d.x, d.y = point, relPoint, x, y
+			YF:LayoutGroup(group)
+			YB:NotifyOptionsChanged()
+		end, function()
+			YB:OpenOptions("frames", group)
+		end)
+		self.holders[group] = holder
+	end
+	local frameHeight = db.healthHeight + (db.showPower and (db.powerHeight + 1) or 0) + 2
+	local d = self.db.defaults.profile.units[group]
+	holder:SetScale(db.scale)
+	holder:SetWidth(db.width)
+	holder:SetHeight(#units * frameHeight + (#units - 1) * db.spacing)
+	holder:ClearAllPoints()
+	holder:SetPoint(db.point or d.point, UIParent, db.relPoint or d.relPoint, db.x or d.x, db.y or d.y)
+	holder:Show()
+	for _, unit in ipairs(units) do
+		self:LayoutFrame(unit)
+		if not self.testMode then
+			local f = self.frames[unit]
+			f:Unwatch()
+			f:Watch()
+		end
+	end
+	holder.yMover:SetFrameLevel(self.frames[units[1]]:GetFrameLevel() + 20)
 end
 
 -- Updates
@@ -359,6 +488,21 @@ function YF:UpdatePortrait(f)
 		tex:Hide()
 		return
 	end
+	if db.portrait == "class" then
+		model:Hide()
+		local _, class = UnitClass(sample(f) and "player" or unit)
+		local coords = class and CLASS_ICON_TCOORDS[class]
+		if coords and (sample(f) or UnitIsPlayer(unit)) then
+			tex:SetTexture(CLASS_ICONS)
+			tex:SetTexCoord(coords[1] + 0.015, coords[2] - 0.015, coords[3] + 0.015, coords[4] - 0.015)
+		else
+			SetPortraitTexture(tex, unit)
+			tex:SetTexCoord(0.15, 0.85, 0.15, 0.85)
+		end
+		tex:Show()
+		return
+	end
+	tex:SetTexCoord(0.15, 0.85, 0.15, 0.85)
 	if sample(f) then
 		model:Hide()
 		tex:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
@@ -443,6 +587,37 @@ function YF:UpdateCombo(f)
 	end
 end
 
+function YF:UpdateTrinket(f, event, spell)
+	local t = f.trinket
+	if not t then
+		return
+	end
+	if not self:GetUnitDB(f.unit).showTrinket then
+		t:Hide()
+		return
+	end
+	if event == "UNIT_SPELLCAST_SUCCEEDED" then
+		if TRINKET_SPELLS[spell] then
+			CooldownFrame_SetTimer(t.cooldown, GetTime(), TRINKET_COOLDOWN, 1)
+		end
+		return
+	end
+	local faction = UnitExists(f.unit) and UnitFactionGroup(f.unit) or UnitFactionGroup("player")
+	t.icon:SetTexture(faction == "Alliance" and "Interface\\Icons\\INV_Jewelry_TrinketPVP_01"
+		or "Interface\\Icons\\INV_Jewelry_TrinketPVP_02")
+	t:Show()
+end
+
+-- Entering a new arena (or leaving one) resets the trinket cooldowns.
+function YF:ResetTrinkets()
+	for _, unit in ipairs(self.GROUP_UNITS.arena) do
+		local f = self.frames[unit]
+		if f and f.trinket then
+			f.trinket.cooldown:Hide()
+		end
+	end
+end
+
 function YF:UpdateFrame(f)
 	self:UpdateHealth(f)
 	self:UpdatePower(f)
@@ -452,6 +627,7 @@ function YF:UpdateFrame(f)
 	self:UpdateCombo(f)
 	self:UpdateAuras(f)
 	self:UpdateCast(f)
+	self:UpdateTrinket(f)
 end
 
 function YF:UpdateAll()
@@ -476,6 +652,7 @@ local UNIT_EVENTS = {
 	UNIT_MODEL_CHANGED = "UpdatePortrait",
 	UNIT_AURA = "UpdateAuras",
 	UNIT_DISPLAYPOWER = "UpdatePower",
+	UNIT_SPELLCAST_SUCCEEDED = "UpdateTrinket",
 }
 for _, power in ipairs({ "MANA", "RAGE", "FOCUS", "ENERGY", "HAPPINESS", "RUNIC_POWER" }) do
 	UNIT_EVENTS["UNIT_" .. power] = "UpdatePower"
@@ -487,34 +664,50 @@ for _, event in ipairs({ "START", "STOP", "FAILED", "INTERRUPTED", "DELAYED", "C
 end
 
 -- Events that aren't about one unit: which frames to refresh, and how.
+-- units = "all" means every frame, "party"/"arena" that group's frames.
 local OTHER_EVENTS = {
-	PLAYER_ENTERING_WORLD = { units = { "player", "target", "focus" }, method = "UpdateFrame" },
-	PLAYER_TARGET_CHANGED = { units = { "target" }, method = "UpdateFrame" },
-	PLAYER_FOCUS_CHANGED = { units = { "focus" }, method = "UpdateFrame" },
-	RAID_TARGET_UPDATE = { units = { "player", "target", "focus" }, method = "UpdateIcons" },
-	PARTY_LEADER_CHANGED = { units = { "player", "target", "focus" }, method = "UpdateIcons" },
-	PARTY_MEMBERS_CHANGED = { units = { "player", "target", "focus" }, method = "UpdateIcons" },
-	PLAYER_UPDATE_RESTING = { units = { "player" }, method = "UpdateIcons" },
-	PLAYER_REGEN_DISABLED = { units = { "player" }, method = "UpdateIcons" },
-	PLAYER_REGEN_ENABLED = { units = { "player" }, method = "UpdateIcons" },
-	UNIT_COMBO_POINTS = { units = { "target" }, method = "UpdateCombo" },
+	PLAYER_ENTERING_WORLD = { { units = "all", method = "UpdateFrame" } },
+	PLAYER_TARGET_CHANGED = { { units = { "target" }, method = "UpdateFrame" } },
+	PLAYER_FOCUS_CHANGED = { { units = { "focus" }, method = "UpdateFrame" } },
+	RAID_TARGET_UPDATE = { { units = "all", method = "UpdateIcons" } },
+	PARTY_LEADER_CHANGED = { { units = "all", method = "UpdateIcons" } },
+	PARTY_MEMBERS_CHANGED = { { units = { "player", "target", "focus" }, method = "UpdateIcons" },
+		{ units = "party", method = "UpdateFrame" } },
+	PARTY_MEMBER_ENABLE = { { units = "party", method = "UpdateFrame" } },
+	PARTY_MEMBER_DISABLE = { { units = "party", method = "UpdateFrame" } },
+	ARENA_OPPONENT_UPDATE = { { units = "arena", method = "UpdateFrame" } },
+	PLAYER_UPDATE_RESTING = { { units = { "player" }, method = "UpdateIcons" } },
+	PLAYER_REGEN_DISABLED = { { units = { "player" }, method = "UpdateIcons" } },
+	PLAYER_REGEN_ENABLED = { { units = { "player" }, method = "UpdateIcons" } },
+	UNIT_COMBO_POINTS = { { units = { "target" }, method = "UpdateCombo" } },
 }
 
+local function unitsOf(units)
+	if units == "all" then
+		return YF:AllUnits()
+	end
+	return YF.GROUP_UNITS[units] or units
+end
+
 local eventFrame = CreateFrame("Frame")
-eventFrame:SetScript("OnEvent", function(_, event, arg1)
+eventFrame:SetScript("OnEvent", function(_, event, arg1, ...)
 	local method = UNIT_EVENTS[event]
 	if method then
 		local f = YF.frames[arg1]
 		if f and YF:GetUnitDB(arg1).enabled then
-			YF[method](YF, f, event)
+			YF[method](YF, f, event, ...)
 		end
 		return
 	end
-	local info = OTHER_EVENTS[event]
-	for _, unit in ipairs(info.units) do
-		local f = YF.frames[unit]
-		if f and YF:GetUnitDB(unit).enabled then
-			YF[info.method](YF, f, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		YF:ResetTrinkets()
+	end
+	for _, info in ipairs(OTHER_EVENTS[event]) do
+		for _, unit in ipairs(unitsOf(info.units)) do
+			local f = YF.frames[unit]
+			if f and YF:GetUnitDB(unit).enabled then
+				YF[info.method](YF, f, event)
+			end
 		end
 	end
 end)

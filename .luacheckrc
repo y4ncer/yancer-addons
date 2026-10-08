@@ -188,4 +188,7 @@ read_globals = {
 	"IsInInstance",
 	"WatchFrame_Collapse",
 	"WatchFrame_Expand",
+	"GetSpellInfo",
+	"UnitInRange",
+	"CLASS_ICON_TCOORDS",
 }

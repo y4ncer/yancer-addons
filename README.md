@@ -6,7 +6,7 @@ A collection of World of Warcraft **3.3.5a (build 12340)** addons for **Warmane*
 |---|---|---|
 | `yancer-bars` | v0.8.0 | Replaces Blizzard's action bars with movable, customizable bars (square icons, outlines, fading, range colouring, cooldown timers), and makes the rest of the default UI movable. |
 | `yancer-chat` | v0.1.0 | Square, movable chat: class colours, short channels, timestamps, clickable URLs, copy chat, better scrolling. Needs yancer-bars. |
-| `yancer-frames` | v0.1.0 | Custom Player, Target and Focus frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
+| `yancer-frames` | v0.2.0 | Custom Player, Target, Focus, Party and Arena frames: movable, resizable, square with outlines, class-coloured health, auras, cast bars. Needs yancer-bars. |
 | `yancer-bags` | v0.1.0 | All bags in one square, searchable window with quality borders, free slots and gold. Needs yancer-bars. |
 | `yancer-quests` | v0.1.0 | Movable square quest tracker (auto-collapse, coloured objectives), which mobs to kill and which mobs drop quest items (bundled quest database), square quest windows. Needs yancer-bars. |
 
@@ -194,6 +194,11 @@ Needs yancer-bars (its settings live in `/yb` → Unit Frames, and it uses the s
   only my debuffs); a cast bar below it; combo points on the target. **Reset Position** puts it back.
 - Placed with `/yb move`. While unlocked every frame shows, with sample values when the unit doesn't exist.
 - The pet frame, death knight runes and shaman totem timers stay, below the Player frame.
+- **Party** (party1-4) and **Arena** (arena1-5) frames: one tab and one mover per group, the members
+  stacked with adjustable spacing. Party frames: right-click menu, hide in raids, fade out of range
+  (about 40 yards). Arena frames: class icon, cast bar, the enemy's PvP trinket with its 2 minute
+  cooldown. Left-click targets, right-click focuses. Turn Arena off if you use Gladdy.
+- Portraits can also be a **class icon**.
 - Turning a frame off needs a `/reload` to get Blizzard's back.
 
 ## yancer-bags

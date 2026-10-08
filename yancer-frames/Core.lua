@@ -7,8 +7,25 @@ ns.YF, ns.YB = YF, YB
 _G.YancerFrames = YF -- exposed for /run debugging
 
 YF.UNITS = { "player", "target", "focus" }
-YF.UNIT_NAMES = { player = "Player", target = "Target", focus = "Focus" }
+YF.UNIT_NAMES = { player = "Player", target = "Target", focus = "Focus", party = "Party", arena = "Arena" }
+YF.FRAME_NAMES = { player = "Player", target = "Target", focus = "Focus" }
+-- Groups share one set of settings and one mover; their members stack downwards.
+YF.GROUPS = { "party", "arena" }
+YF.GROUP_UNITS = { party = {}, arena = {} }
+for i = 1, 4 do
+	YF.GROUP_UNITS.party[i] = "party" .. i
+end
+for i = 1, 5 do
+	YF.GROUP_UNITS.arena[i] = "arena" .. i
+end
+for group, units in pairs(YF.GROUP_UNITS) do
+	for i, unit in ipairs(units) do
+		YF.UNIT_NAMES[unit] = YF.UNIT_NAMES[group] .. " " .. i
+		YF.FRAME_NAMES[unit] = YF.UNIT_NAMES[group] .. i
+	end
+end
 YF.frames = {} -- unit -> frame
+YF.holders = {} -- group -> holder frame (carries the mover)
 
 local defaults = {
 	profile = {
@@ -63,12 +80,53 @@ local defaults = {
 				width = 180, healthHeight = 24, powerHeight = 8,
 				portrait = "none",
 			},
+			party = {
+				point = "LEFT", relPoint = "LEFT", x = 40, y = 120,
+				width = 160, healthHeight = 36, powerHeight = 6,
+				portrait = "none",
+				showLevel = false,
+				showPvP = false,
+				showAuras = false,
+				auraSize = 18,
+				showCastBar = false,
+				spacing = 8,
+				hideInRaid = true,
+				rangeFade = true,
+			},
+			arena = {
+				point = "RIGHT", relPoint = "RIGHT", x = -300, y = 120,
+				width = 180, healthHeight = 26, powerHeight = 6,
+				portrait = "class",
+				showLevel = false,
+				showPvP = false,
+				showLeader = false,
+				showAuras = false,
+				auraSize = 18,
+				castBarHeight = 12,
+				spacing = 26,
+				showTrinket = true,
+			},
 		},
 	},
 }
 
+-- "party3" and "arena2" use their group's settings.
 function YF:GetUnitDB(unit)
-	return self.db.profile.units[unit]
+	return self.db.profile.units[unit:match("^(%a+)%d$") or unit]
+end
+
+-- Every unit that can get a frame: player, target, focus, party1-4, arena1-5.
+function YF:AllUnits()
+	local list = {}
+	for _, unit in ipairs(self.UNITS) do
+		list[#list + 1] = unit
+	end
+	for _, group in ipairs(self.GROUPS) do
+		for _, unit in ipairs(self.GROUP_UNITS[group]) do
+			list[#list + 1] = unit
+		end
+	end
+	return list
 end
 
 function YF:OnInitialize()
@@ -81,6 +139,12 @@ end
 
 function YF:OnEnable()
 	self:RegisterEvents()
+	-- Blizzard's arena frames load with Blizzard_ArenaUI, on demand.
+	self:RegisterEvent("ADDON_LOADED", function(_, name)
+		if name == "Blizzard_ArenaUI" and self:GetUnitDB("arena").enabled then
+			self:HideBlizzard("arena")
+		end
+	end)
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	-- Frames stay visible while moving bars so Target/Focus can be placed without a target.
 	hooksecurefunc(YB, "SetLocked", function(_, locked)
@@ -108,8 +172,21 @@ function YF:Refresh()
 			self:LayoutFrame(unit)
 			self:HideBlizzard(unit)
 		elseif self.frames[unit] then
-			UnregisterUnitWatch(self.frames[unit])
+			self.frames[unit]:Unwatch()
 			self.frames[unit]:Hide()
+		end
+	end
+	for _, group in ipairs(self.GROUPS) do
+		local db = self:GetUnitDB(group)
+		if db.enabled then
+			self:LayoutGroup(group)
+			self:HideBlizzard(group)
+		elseif self.holders[group] then
+			self.holders[group]:Hide()
+			for _, unit in ipairs(self.GROUP_UNITS[group]) do
+				self.frames[unit]:Unwatch()
+				self.frames[unit]:Hide()
+			end
 		end
 	end
 	self:SetTestMode(not YB.db.profile.locked)
@@ -124,6 +201,9 @@ local BLIZZARD = {
 	player = { "PlayerFrame" },
 	target = { "TargetFrame", "ComboFrame", "TargetFrameToT" },
 	focus = { "FocusFrame", "FocusFrameToT" },
+	party = { "PartyMemberFrame1", "PartyMemberFrame2", "PartyMemberFrame3", "PartyMemberFrame4",
+		"PartyMemberBackground" },
+	arena = { "ArenaEnemyFrames" }, -- Blizzard_ArenaUI loads on demand: see the ADDON_LOADED hook
 }
 
 function YF:HideBlizzard(unit)
@@ -163,10 +243,10 @@ function YF:SetTestMode(on)
 	for unit, frame in pairs(self.frames) do
 		if self:GetUnitDB(unit).enabled then
 			if on then
-				UnregisterUnitWatch(frame)
+				frame:Unwatch()
 				frame:Show()
 			else
-				RegisterUnitWatch(frame)
+				frame:Watch()
 			end
 		end
 	end

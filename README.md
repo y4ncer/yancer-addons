@@ -163,12 +163,15 @@ yancer/
   highlights; the XP, reputation and cast bars become flat bars with a border. All share one outline
   (style, size, colour). The totem slot buttons and keyring keep Blizzard's art. Undoing it needs
   a `/reload`.
-- **Player cast bar** (Square style): the spell icon on its left. Smooth fill computed from the cast's real
-  start/end time every frame, with a soft spark on its edge. Blizzard's flash art no longer shows when a
-  cast ends. Channelled spells (Mind Flay, Mind Sear, Penance, Drain Soul/Life/Mana, Health Funnel, Hellfire,
-  Rain of Fire, Arcane Missiles, Blizzard, Evocation, Hurricane, Tranquility, Volley, Divine Hymn, Hymn of
-  Hope) get dark tick marks and a ticks-left counter on the right. Pushback shows in red on the left:
-  `+0.5s` when a cast is delayed, `-0.8s` when a channel is cut short.
+- **Player cast bar** (Square style, Quartz-like; `/yb` → UI Elements → Cast Bar): a glossy bar in your class
+  colour (or any colour) with a thin white spark, the spell icon on its left, `Spell (Target)` on the left and
+  `remaining/total` on the right, and your latency as a red zone at the end (once the fill reaches it the cast
+  is done on your side). Width, height and font size are adjustable. The fill is computed from the cast's real
+  start/end time every frame, so it moves evenly. Blizzard's flash art no longer shows when a cast ends.
+  Channels show the spell name, not "Channeling". Channelled spells (Mind Flay, Mind Sear, Penance, Drain
+  Soul/Life/Mana, Health Funnel, Hellfire, Rain of Fire, Arcane Missiles, Blizzard, Evocation, Hurricane,
+  Tranquility, Volley, Divine Hymn, Hymn of Hope) get dark tick marks and a ticks-left count. Pushback shows in
+  red before the time: `+0.5` when a cast is delayed, `-0.8` when a channel is cut short.
 - **Profiles:** per-character by default. Copy, reset or share them through the Profiles tab.
 - **Reusable API for other yancer addons:** `YancerBars:CreateShadow(frame)`,
   `YancerBars:UpdateShadow(frame, size, {r,g,b,a})`, `YancerBars:CreateMover(frame, label, onMoved)`.

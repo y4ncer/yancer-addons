@@ -278,11 +278,56 @@ local function barOptions(id, order)
 end
 
 -- Options for one Blizzard UI element (see Elements.lua).
+-- Extra settings for the player cast bar (CastBar.lua, square style only).
+local function castBarOptions(args)
+	local function c()
+		return YB.db.profile.castBar
+	end
+	local function off()
+		return not YB.db.profile.skinElements
+	end
+	local function get(info)
+		return c()[info[#info]]
+	end
+	local function set(info, value)
+		c()[info[#info]] = value
+		YB:LayoutCastBar()
+	end
+	local function opt(t)
+		t.get, t.set, t.disabled = t.get or get, t.set or set, off
+		return t
+	end
+	args.castHeader = header("Cast Bar Style", 10)
+	args.castNote = { type = "description", order = 11,
+		name = "Needs the square style (UI Elements > Style). Your class colour, the spell icon, "
+			.. "\"Spell (Target)\", \"remaining/total\" time and your latency as a red zone at the end.\n" }
+	args.width = opt(rangeOption("Width", 12, 100, 600, 1))
+	args.height = opt(rangeOption("Height", 13, 8, 50, 1))
+	args.fontSize = opt(rangeOption("Font Size", 14, 6, 24, 1))
+	args.classColor = opt({ type = "toggle", name = "Class Colour", order = 15 })
+	args.color = opt({ type = "color", name = "Bar Colour", order = 16,
+		desc = "Used when Class Colour is off.",
+		get = function()
+			local col = c().color
+			return col.r, col.g, col.b
+		end,
+		set = function(_, r, g, b)
+			c().color = { r = r, g = g, b = b }
+		end,
+	})
+	args.showIcon = opt({ type = "toggle", name = "Spell Icon", order = 17 })
+	args.showTarget = opt({ type = "toggle", name = "Target Name", order = 18,
+		desc = "\"Flash Heal (Name)\" when casting on someone else." })
+	args.showTime = opt({ type = "toggle", name = "Time", order = 19, desc = "Remaining / total cast time." })
+	args.showLatency = opt({ type = "toggle", name = "Latency Zone", order = 20,
+		desc = "Your latency as a red zone at the end of the bar." })
+end
+
 local function elementOptions(el)
 	local function db()
 		return YB:GetElementDB(el.key)
 	end
-	return {
+	local group = {
 		type = "group", name = el.name, order = el.order,
 		args = {
 			info = {
@@ -321,6 +366,10 @@ local function elementOptions(el)
 			},
 		},
 	}
+	if el.key == "cast" then
+		castBarOptions(group.args)
+	end
+	return group
 end
 
 function YB:SetupOptions()

@@ -28,6 +28,18 @@ local defaults = {
 		skinOutlineStyle = "outline",
 		skinOutlineSize = 1,
 		skinOutlineColor = { r = 0, g = 0, b = 0, a = 1 },
+		-- Player cast bar in the square style (CastBar.lua)
+		castBar = {
+			width = 280,
+			height = 22,
+			fontSize = 12,
+			classColor = true,
+			color = { r = 0.3, g = 0.3, b = 1 },
+			showIcon = true,
+			showTarget = true,  -- "Spell (Target)"
+			showTime = true,    -- "remaining/total"
+			showLatency = true, -- red latency zone at the end
+		},
 		-- Blizzard UI elements made movable (see Elements.lua). No position = the element's default.
 		elements = {
 			["**"] = {
